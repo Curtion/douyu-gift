@@ -1,0 +1,18 @@
+{
+  "name": "remind-me",
+  "version": "1.0.0",
+  "description": "一个提醒你休息的软件",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Curtion",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^5.0.1"
+  },
+  "dependencies": {
+    "lndb": "0.0.3",
+    "lowdb": "^1.0.0"
+  }
+}
