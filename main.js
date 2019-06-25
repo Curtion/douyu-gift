@@ -17,9 +17,10 @@ const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('db.json')
 const db = low(adapter)
 db.defaults({
-    user: '', // 用户名
     send: [], // 需要发送的数据
-    prop_id: 268, // 礼物ID 荧光棒268
+    num: 0, //粉丝棒总数
+    prop_id: 268,
+    url: 'https://www.douyu.com/member/prop/send'
   }).write() // 数据库初始化
 
 // 主窗口 + 登陆窗口
@@ -40,6 +41,13 @@ function createWindow () {
   // win.webContents.openDevTools({mode:'detach'}) // 打开开发者工具
   win.on('closed', () => {
     win = null
+  })
+  const filter = { // 获取背包礼物数量，此接口有referer验证
+    urls: ['https://www.douyu.com/member/prop/query',]
+  }
+  session.defaultSession.webRequest.onBeforeSendHeaders(filter, (details, callback) => {
+    details.requestHeaders['referer'] = 'https://www.douyu.com/4120796'
+    callback({ requestHeaders: details.requestHeaders })
   })
 }
 
@@ -71,5 +79,14 @@ ipcMain.on('add',(event, arg)=> {
   login.on('closed',()=>{
     login = null
     event.reply('loginres')
+  })
+})
+
+ipcMain.on('getCookie',(event, arg)=> {
+  session.defaultSession.cookies.get({ domain: 'douyu.com' })
+  .then((cookies) => {
+    event.reply('pushCookie', cookies)
+  }).catch((error) => {
+    event.reply('pushCookie', error)
   })
 })

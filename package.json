@@ -12,6 +12,7 @@
     "electron": "^5.0.1"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "lndb": "0.0.3",
     "lowdb": "^1.0.0"
   }
