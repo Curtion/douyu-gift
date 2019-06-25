@@ -21,12 +21,30 @@ function checkLogin() { // 登录后执行的操作
     </div>
   </div>`
   checkLoginStatus().then((phone) => { // 登录成功
-    logininfo.innerHTML = `账号:${phone.slice(5, 16)}&nbsp;&nbsp;
+    logininfo.innerHTML = `<div style="display: flex; justify-content: space-between; width: 100%"><div>账号:${phone.slice(5, 16)}&nbsp;&nbsp;
     <button class="am-btn am-btn-primary am-btn-xs am-round btn-restart">刷新数据
-    </button>`
+    </button></div>
+    <button class="am-btn am-btn-warning am-btn-xs am-round btn-logout">退出账号
+    </button></div>
+    `
     let loginBtn = document.getElementsByClassName('btn-restart')[0];
     loginBtn.addEventListener('click', () => { // 刷新按钮
       checkLogin();
+    })
+    let logoutBtn = document.getElementsByClassName('btn-logout')[0];
+    logoutBtn.addEventListener('click', () => { // 退出按钮
+      const xhr = new XMLHttpRequest()
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState==4 && xhr.status==200) {
+          try {
+            checkLogin();
+          } catch (err) {
+            alert(err)
+          }
+        }
+      }
+      xhr.open('GET', 'https://passport.douyu.com/sso/logout?client_id=1', true)
+      xhr.send()
     })
     restart(); // 获得数据信息
   }).catch(() => { // 登录失败
