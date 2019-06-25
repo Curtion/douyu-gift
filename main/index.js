@@ -38,6 +38,8 @@ function checkLogin() { // 登录后执行的操作
         if (xhr.readyState==4 && xhr.status==200) {
           try {
             checkLogin();
+            db.set('send', {}).write()
+            ipcRenderer.send('quit') // 重启
           } catch (err) {
             alert(err)
           }

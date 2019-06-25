@@ -89,3 +89,8 @@ ipcMain.on('getCookie',(event, arg)=> {
     event.reply('pushCookie', error)
   })
 })
+
+ipcMain.on('quit',(event, arg)=> {
+  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch']) })
+  app.exit(0)
+})
