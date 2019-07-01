@@ -1,7 +1,7 @@
 {
-  "user": "",
-  "send": {},
+  "send": [],
+  "num": 0,
   "prop_id": 268,
-  "num": 50,
-  "url": "https://www.douyu.com/member/prop/send"
+  "fsnum": 5,
+  "date": "2019-7-1"
 }

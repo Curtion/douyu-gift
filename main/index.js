@@ -5,14 +5,26 @@ const adapter = new FileSync('db.json')
 const db = low(adapter)
 window.onload = () => {
   checkLogin();
-  ipcRenderer.once('loginres', (event, res)=> { // 登陆后的回调
+  ipcRenderer.on('loginres', (event, res)=> { // 登陆后的回调
     checkLogin();
   })
+  let timer = setInterval(() => {
+    let sendLength = db.get('send').value().length // 待赠送的主播的个数
+    if(db.get('date').value() !== getDate()) {
+      if(db.get('fsnum').value() >= sendLength && sendLength !== 0) {
+        pushCheckIn() // 开始签到
+        clearInterval(timer)
+      }
+    } else {
+      console.log('今日已签到')
+    }
+  }, 1000)
 }
 
 function checkLogin() { // 登录后执行的操作
-  let logininfo = document.querySelector('.userinfo');
-  let userdata = document.querySelector('.userdata');
+  db.set('send', []).write() //清空需要发送的数据
+  let logininfo = document.querySelector('.userinfo'); // 礼物数量重置
+  let userdata = document.querySelector('.userdata'); // 表格信息重置
   userdata.innerHTML = '<div class="data"></div><div class="num"></div>'
   logininfo.innerHTML = `<span>账号信息加载中</span>
   <div class="pswp__preloader__icn">
@@ -38,7 +50,7 @@ function checkLogin() { // 登录后执行的操作
         if (xhr.readyState==4 && xhr.status==200) {
           try {
             checkLogin();
-            db.set('send', {}).write()
+            db.set('send', []).write()
             ipcRenderer.send('quit') // 重启
           } catch (err) {
             alert(err)
@@ -91,6 +103,7 @@ function restart() { // 获得数据信息
     let list = res.querySelector('.fans-badge-list')
     let number = db.get('num').value()
     let avg = Math.floor(number/(list.rows.length-1))
+    db.set('fsnum', list.rows.length-1).write()
     let difference = 0 // 差值
     let newavg = 0 //新值
     if(avg * (list.rows.length - 1) !== number) {
@@ -115,7 +128,7 @@ function restart() { // 获得数据信息
                 <td>${exp}</td>
                 <td>${nowjy}</td>
                 <td>${ranking}</td>
-                <td contenteditable="true" class="am-active">${difference === 0 ? avg: newavg}</td>
+                <td class="am-active">${difference === 0 ? avg: newavg}</td>
                 </tr>`
         if(difference === 0) {
           getSendinfo({
@@ -155,7 +168,7 @@ function restart() { // 获得数据信息
   })
 }
 
-function getProp() { // 礼物查询
+function getProp() { // 礼物数量查询
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.onreadystatechange = () => {
@@ -174,7 +187,7 @@ function getProp() { // 礼物查询
   })
 }
 
-function getFansBadgeList() { // 获得粉丝牌
+function getFansBadgeList() { // 获得粉丝牌数据
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.onreadystatechange = () => {
@@ -210,7 +223,10 @@ function checkLoginStatus() { // 检测是否登录
   })
 }
 
-function getSendinfo(obj) {
+function getSendinfo(obj) { // 加载赠送礼物需要的参数
+  if(db.get('date').value() === getDate()) {
+    return
+  }
   $.blockUI({ message: `等待${obj.name}的房间信息载入...` })
   getRoomidInfo(obj.roomid).then((res) => {
     let dy_did, acf_uid;
@@ -238,7 +254,7 @@ function getSendinfo(obj) {
   })
 }
 
-function getRoomidInfo(roomid) {
+function getRoomidInfo(roomid) { // 获得房间HTML
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.onreadystatechange = () => {
@@ -259,4 +275,59 @@ function stringToDom(txt) { // 字符串转dom
   var obj = document.createElement("div"); 
   obj.innerHTML = txt; 
   return obj; 
+}
+function pushLw(args) { // 赠送礼物AJAX
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState==4 && xhr.status==200) {
+        try {
+          resolve(xhr.responseText)
+        } catch (err) {
+          reject(err)
+        }
+      }
+    }
+    xhr.open('POST', 'https://www.douyu.com/member/prop/send', true)
+    let data = new FormData();
+    data.append("rid", args.rid)
+    data.append("prop_id", 268)
+    data.append("num", args.num)
+    data.append("sid", args.sid)
+    data.append("did", args.did)
+    data.append("dy", args.dy)
+    xhr.send(data)
+  })
+}
+
+async function get286num() {
+  let ygb = JSON.parse(await getProp()).data.list
+  let num;
+  for(let i = 0; i < ygb.length; i++) {
+    if (ygb[i].prop_id === 268) {
+      num = ygb[i].count
+      break
+    }
+  }
+  return num
+}
+
+async function pushCheckIn() { // 开始签到
+  let sendArr = db.get('send').value()
+  let promiseArr = []
+  for(let i = 0; i < sendArr.length; i++) {
+    promiseArr.push(pushLw(sendArr[i]))
+  }
+  Promise.all(promiseArr).then(function() {
+    db.set('send', []).write() //清空需要发送的数据
+    db.set('date', getDate()).write()
+  })
+}
+
+function getDate() {
+  let date = new Date()
+  let day = date.getDay()
+  let mon = date.getMonth() + 1
+  let yer = date.getFullYear()
+  return `${yer}-${mon}-${day}`
 }
