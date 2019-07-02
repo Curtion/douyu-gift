@@ -282,7 +282,9 @@ function pushLw(args) { // 赠送礼物AJAX
     xhr.onreadystatechange = () => {
       if (xhr.readyState==4 && xhr.status==200) {
         try {
-          resolve(xhr.responseText)
+          setTimeout(function() {
+            resolve(xhr.responseText)
+          },1000)
         } catch (err) {
           reject(err)
         }

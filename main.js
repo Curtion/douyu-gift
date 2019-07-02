@@ -24,7 +24,7 @@ db.defaults({
   }).write() // 数据库初始化
 
 // 主窗口 + 登陆窗口
-let win, login
+let win, login, loadly
 // Menu.setApplicationMenu(null) // 顶部菜单栏
 function createWindow () {
   win = new BrowserWindow({
@@ -49,18 +49,30 @@ function createWindow () {
     details.requestHeaders['referer'] = 'https://www.douyu.com/'
     callback({ requestHeaders: details.requestHeaders })
   })
+
+  // loadly = new BrowserWindow({
+  //   width: 0, // 1240
+  //   height: 0, // 720
+  //   webPreferences: {
+  //     nodeIntegration: true,
+  //     webSecurity: false
+  //   },
+  //   icon: __dirname + '/assest/logo.png',
+  //   resizable: false
+  // })
+  // loadly.loadURL('https://www.douyu.com/74751')
 }
 
-app.on('ready', createWindow)
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-app.on('activate', () => { // 重新激活时触发
-  if (win === null) {
-    createWindow()
-  }
+  app.on('ready', createWindow)
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+  app.on('activate', () => { // 重新激活时触发
+    if (win === null) {
+      createWindow()
+    }
 })
 
 ipcMain.on('add',(event, arg)=> {
