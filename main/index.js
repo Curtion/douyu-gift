@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron')
+const { dialog } = require('electron').remote
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
 const adapter = new FileSync('db.json')
@@ -308,9 +309,24 @@ async function pushCheckIn() { // 开始签到
   for(let i = 0; i < sendArr.length; i++) {
     promiseArr.push(pushLw(sendArr[i], i))
   }
-  Promise.all(promiseArr).then(function() {
-    db.set('send', []).write() //清空需要发送的数据
-    db.set('date', getDate()).write()
+  Promise.all(promiseArr).then(res => {
+    let Arr = []
+    for(let i = 0; i < res.length; i++) {
+      if(JSON.parse(res[i]).error === 0) {
+        Arr.push(i)
+      }
+    }
+    if(Arr.length === res.length) {
+      db.set('send', []).write() //清空需要发送的数据
+      db.set('date', getDate()).write()
+      let ele = document.querySelector('.data')
+      let data = ele.innerHTML
+      ele.innerHTML = data + '----本次礼物赠送成功' 
+    } else {
+      let ele = document.querySelector('.data')
+      let data = ele.innerHTML
+      ele.innerHTML = data + '----本次礼物赠送失败' 
+    }
   })
 }
 
@@ -321,6 +337,7 @@ function getDate() {
   let yer = date.getFullYear()
   return `${yer}-${mon}-${day}`
 }
+
 /**
  * https://www.douyu.com/wgapi/live/match/getFocusConfig
  * https://www.douyu.com/wgapi/livenc/liveweb/follow/reddot
