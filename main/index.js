@@ -89,12 +89,12 @@ function restart() { // 获得数据信息
           <span class="am-badge am-badge-success" style="line-height: 22px; margin-right: 20px;">${res.data.list[i].count}个</span>
         </div>
        </li>`
+       data.innerHTML = `<ul class="am-list am-list-border am-list-striped">${lwdata}</ul>`
        break
       } else {
-        data.innerHTML = '今日荧光棒已赠送'
+        data.innerHTML = '今日荧光棒已赠送或没有领取'
       }
     }
-    data.innerHTML = `<ul class="am-list am-list-border am-list-striped">${lwdata}</ul>`
   }).catch(() => {
     data.innerHTML = '请检查你的网络..'
   })
@@ -276,15 +276,13 @@ function stringToDom(txt) { // 字符串转dom
   obj.innerHTML = txt; 
   return obj; 
 }
-function pushLw(args) { // 赠送礼物AJAX
+function pushLw(args, i) { // 赠送礼物AJAX
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest()
     xhr.onreadystatechange = () => {
       if (xhr.readyState==4 && xhr.status==200) {
         try {
-          setTimeout(function() {
-            resolve(xhr.responseText)
-          },1000)
+          resolve(xhr.responseText)
         } catch (err) {
           reject(err)
         }
@@ -298,27 +296,17 @@ function pushLw(args) { // 赠送礼物AJAX
     data.append("sid", args.sid)
     data.append("did", args.did)
     data.append("dy", args.dy)
-    xhr.send(data)
+    setTimeout(function() {
+      xhr.send(data) 
+    },1000*i)
   })
-}
-
-async function get286num() {
-  let ygb = JSON.parse(await getProp()).data.list
-  let num;
-  for(let i = 0; i < ygb.length; i++) {
-    if (ygb[i].prop_id === 268) {
-      num = ygb[i].count
-      break
-    }
-  }
-  return num
 }
 
 async function pushCheckIn() { // 开始签到
   let sendArr = db.get('send').value()
   let promiseArr = []
   for(let i = 0; i < sendArr.length; i++) {
-    promiseArr.push(pushLw(sendArr[i]))
+    promiseArr.push(pushLw(sendArr[i], i))
   }
   Promise.all(promiseArr).then(function() {
     db.set('send', []).write() //清空需要发送的数据
@@ -333,3 +321,10 @@ function getDate() {
   let yer = date.getFullYear()
   return `${yer}-${mon}-${day}`
 }
+/**
+ * https://www.douyu.com/wgapi/live/match/getFocusConfig
+ * https://www.douyu.com/wgapi/livenc/liveweb/follow/reddot
+ * https://www.douyu.com/ztCache/club/getanchorclubstatus?roomid=21267
+ * https://www.douyu.com/ztCache/mobilegame/getPcPush?room_id=21267&client_sys=web
+ * https://www.douyu.com/japi/anchorfriend/api/getAnchorFriends?rid=21267
+ */
