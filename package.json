@@ -25,6 +25,13 @@
     "directories": {
       "output": "build"
     },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "斗鱼自动续牌"
+    },
     "win": {
       "icon": "assest/icon.png",
       "target": [
