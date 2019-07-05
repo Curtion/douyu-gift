@@ -316,17 +316,18 @@ async function pushCheckIn() { // 开始签到
         Arr.push(i)
       }
     }
+    db.set('send', []).write() //清空需要发送的数据
     if(Arr.length === res.length) {
-      db.set('send', []).write() //清空需要发送的数据
-      db.set('date', getDate()).write()
       let ele = document.querySelector('.data')
       let data = ele.innerHTML
-      ele.innerHTML = data + '----本次礼物赠送成功' 
+      ele.innerHTML = data + '----本次礼物赠送成功'
+      db.set('date', getDate()).write()
     } else {
       let ele = document.querySelector('.data')
       let data = ele.innerHTML
       ele.innerHTML = data + '----本次礼物赠送失败' 
     }
+    checkLogin()
   })
 }
 
@@ -344,4 +345,5 @@ function getDate() {
  * https://www.douyu.com/ztCache/club/getanchorclubstatus?roomid=21267
  * https://www.douyu.com/ztCache/mobilegame/getPcPush?room_id=21267&client_sys=web
  * https://www.douyu.com/japi/anchorfriend/api/getAnchorFriends?rid=21267
+ * https://www.douyu.com/lapi/interact/anchorTask/getIntimateOpenStatus?room_id=1561677&cate2_id=44
  */
