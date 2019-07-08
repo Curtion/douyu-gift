@@ -38,7 +38,7 @@ function createWindow () {
     resizable: false
   })
   win.loadFile('main/index.html')
-  // win.webContents.openDevTools({mode:'detach'}) // 打开开发者工具
+  win.webContents.openDevTools({mode:'detach'}) // 打开开发者工具
   win.on('closed', () => {
     win = null
   })

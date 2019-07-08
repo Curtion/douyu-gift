@@ -333,7 +333,7 @@ async function pushCheckIn() { // 开始签到
 
 function getDate() {
   let date = new Date()
-  let day = date.getDay()
+  let day = date.getDate()
   let mon = date.getMonth() + 1
   let yer = date.getFullYear()
   return `${yer}-${mon}-${day}`
@@ -347,3 +347,11 @@ function getDate() {
  * https://www.douyu.com/japi/anchorfriend/api/getAnchorFriends?rid=21267
  * https://www.douyu.com/lapi/interact/anchorTask/getIntimateOpenStatus?room_id=1561677&cate2_id=44
  */
+
+ /**
+  * https://www.douyu.com/actsc/quiz/get_recommend_quiz_list GET
+  * https://www.douyu.com/roomapi/biz/roleBarrage?rid=74751 GET
+  * https://www.douyu.com/lapi/interact/quiz/quizStartAuthority?room_id=74751&cate2_id=928&uid=10612134&is_anchor=0&is_manager=0&t=1562432093130 GET
+  * https://www.douyu.com/lapi/interact/anchorTask/getIntimateOpenStatus?room_id=74751&cate2_id=928
+ */
+
