@@ -237,6 +237,7 @@ function getSendinfo(obj) { // 加载赠送礼物需要的参数
       }
       if(obj.cookie[i].name === 'acf_uid') {
         acf_uid = obj.cookie[i].value
+        db.set('sid', acf_uid).write() //写入用户ID
       }
     }
     let did = res.match(/owner_uid =(.*?);/)[1]
@@ -268,6 +269,25 @@ function getRoomidInfo(roomid) { // 获得房间HTML
       }
     }
     xhr.open('GET', 'https://www.douyu.com/' + roomid, true)
+    xhr.send()
+  })
+}
+
+function get928() { // 获得房间HTML
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    const sid = db.get('sid').value()
+    const timestamp = new Date().getTime()
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState==4 && xhr.status==200) {
+        try {
+          resolve(xhr.responseText)
+        } catch (err) {
+          reject(err)
+        }
+      }
+    }
+    xhr.open('GET', 'https://www.douyu.com/lapi/interact/quiz/quizStartAuthority?room_id=74751&cate2_id=928&uid=' + sid + '&is_anchor=0&is_manager=0&t=' + timestamp, true)
     xhr.send()
   })
 }
@@ -305,6 +325,8 @@ function pushLw(args, i) { // 赠送礼物AJAX
 
 async function pushCheckIn() { // 开始签到
   let sendArr = db.get('send').value()
+  let res = await get928()
+  console.log(res)
   let promiseArr = []
   for(let i = 0; i < sendArr.length; i++) {
     promiseArr.push(pushLw(sendArr[i], i))
@@ -338,20 +360,3 @@ function getDate() {
   let yer = date.getFullYear()
   return `${yer}-${mon}-${day}`
 }
-
-/**
- * https://www.douyu.com/wgapi/live/match/getFocusConfig
- * https://www.douyu.com/wgapi/livenc/liveweb/follow/reddot
- * https://www.douyu.com/ztCache/club/getanchorclubstatus?roomid=21267
- * https://www.douyu.com/ztCache/mobilegame/getPcPush?room_id=21267&client_sys=web
- * https://www.douyu.com/japi/anchorfriend/api/getAnchorFriends?rid=21267
- * https://www.douyu.com/lapi/interact/anchorTask/getIntimateOpenStatus?room_id=1561677&cate2_id=44
- */
-
- /**
-  * https://www.douyu.com/actsc/quiz/get_recommend_quiz_list GET
-  * https://www.douyu.com/roomapi/biz/roleBarrage?rid=74751 GET
-  * https://www.douyu.com/lapi/interact/quiz/quizStartAuthority?room_id=74751&cate2_id=928&uid=10612134&is_anchor=0&is_manager=0&t=1562432093130 GET
-  * https://www.douyu.com/lapi/interact/anchorTask/getIntimateOpenStatus?room_id=74751&cate2_id=928
- */
-

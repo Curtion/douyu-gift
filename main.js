@@ -20,7 +20,8 @@ db.defaults({
     num: 0, //粉丝棒总数，用于计算平均分配
     prop_id: 268, // 荧光棒ID
     fsnum: 0, // 粉丝牌数量,用于判断当前赠送是否完成
-    date: '' // 上次签到时间
+    date: '', // 上次签到时间
+    sid: 0 //　用户ID
   }).write() // 数据库初始化
 
 // 主窗口 + 登陆窗口
@@ -38,7 +39,7 @@ function createWindow () {
     resizable: false
   })
   win.loadFile('main/index.html')
-  win.webContents.openDevTools({mode:'detach'}) // 打开开发者工具
+  // win.webContents.openDevTools({mode:'detach'}) // 打开开发者工具
   win.on('closed', () => {
     win = null
   })
