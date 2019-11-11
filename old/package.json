@@ -1,0 +1,50 @@
+{
+  "name": "remind-me",
+  "version": "1.0.0",
+  "description": "一个提醒你休息的软件",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+	  "dist-win": "electron-builder --win --x64"
+  },
+  "author": "Curtion",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^5.0.1",
+    "electron-builder": "^20.44.4"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "lndb": "0.0.3",
+    "lowdb": "^1.0.0"
+  },
+  "build": {
+    "productName": "斗鱼自动续牌-竹影流浪",
+    "appId": "com.3gxk.dy",
+    "copyright": "Cutrtion",
+    "directories": {
+      "output": "build"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "斗鱼自动续牌"
+    },
+    "win": {
+      "icon": "assest/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "icon": "assest/icon.png"
+    }
+  }
+}
