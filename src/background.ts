@@ -18,15 +18,16 @@ protocol.registerSchemesAsPrivileged([
 function createWindow() {
   electron.Menu.setApplicationMenu(null);
   win = new BrowserWindow({
-    width: 1000,
-    height: 600,
+    width: 800,
+    height: 400,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    resizable: false
   });
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string);
-    // if (!process.env.IS_TEST) win.webContents.openDevTools();
+    if (!process.env.IS_TEST) win.webContents.openDevTools();
   } else {
     createProtocol('app');
     win.loadURL('app://./index.html');

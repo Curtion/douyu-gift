@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": ["plugin:vue/essential", "@vue/prettier", "@vue/typescript"],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    },
+    "parser": "@typescript-eslint/parser"
+  },
+  "rules": {
+    "no-console": "off"
+  }
+}
