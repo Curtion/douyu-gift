@@ -6,6 +6,8 @@ import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib';
+import './main/rpc.ts'; // rpc订阅
+require('electron-referer')('https://www.douyu.com/');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let win: BrowserWindow | null;
@@ -21,7 +23,8 @@ function createWindow() {
     width: 800,
     height: 400,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      webSecurity: false
     },
     resizable: false
   });

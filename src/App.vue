@@ -35,6 +35,9 @@ export default class App extends Vue {
       this.$router.push(`/${name}`);
     }
   }
+  created() {
+    this.$store.dispatch('checkLogin');
+  }
 }
 </script>
 
@@ -43,6 +46,7 @@ $hover: rgba(0, 0, 0, 0.08);
 body {
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 #aside {
   height: 100vh;
@@ -58,7 +62,6 @@ body {
       position: relative;
       cursor: pointer;
       padding-left: 10px;
-      user-select: none;
       &:hover {
         background-color: $hover;
         opacity: 0.8;
@@ -75,6 +78,8 @@ body {
 }
 #main {
   height: 100vh;
+  padding: 0px;
+  box-sizing: border-box;
 }
 #app {
   height: 100vh;
