@@ -18,7 +18,7 @@
         </ul>
       </el-aside>
       <el-container>
-        <el-main id="main"> <router-view /> </el-main>
+        <el-main id="main" v-loading="loading"> <router-view /> </el-main>
       </el-container>
     </el-container>
   </div>
@@ -29,6 +29,9 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class App extends Vue {
   get Active() {
     return this.$route.name;
+  }
+  get loading() {
+    return this.$store.state.loading;
   }
   push(name: string) {
     if (this.$route.path !== '/' + name) {
