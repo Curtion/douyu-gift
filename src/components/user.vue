@@ -14,6 +14,9 @@
             style="margin-right:5px;"
           />剩余：{{ gift.num }}</span
         >
+        <span v-else>
+          <el-tag type="success" size="mini">任务已完成</el-tag>
+        </span>
       </div>
       <div>
         <el-button type="info" size="mini">切换账号</el-button>
