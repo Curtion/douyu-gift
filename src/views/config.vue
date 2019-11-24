@@ -64,6 +64,7 @@ export default class home extends Vue {
   }
   @Watch('run')
   onChangeValue(newval: boolean, oldval: boolean) {
+    this.$message('暂无实现');
     if (newval === false) {
       this.close = false;
     }

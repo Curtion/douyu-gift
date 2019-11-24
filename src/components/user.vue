@@ -22,6 +22,15 @@
         <el-button type="info" size="mini">切换账号</el-button>
       </div>
     </header>
+    <el-alert
+      :title="info.title"
+      :type="info.type"
+      v-if="info.show"
+      :closable="false"
+      center
+      show-icon
+    >
+    </el-alert>
     <main class="main">
       <el-scrollbar class="scrollbar">
         <el-table :data="fans" style="width: 100%">
@@ -39,9 +48,20 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
+import init from '../function/send';
+interface alertInfo {
+  title: string;
+  type: string;
+  show: boolean;
+}
 @Component({})
 export default class user extends Vue {
+  info: alertInfo = {
+    title: '',
+    type: 'info',
+    show: false
+  };
   get user() {
     return this.$store.state.user;
   }
@@ -51,9 +71,32 @@ export default class user extends Vue {
   get fans() {
     return this.$store.state.fans;
   }
-  created() {
+  @Watch('gift.num')
+  onChangeValue(newval: number) {
+    if (newval > 0) {
+      this.info.show = true;
+      let i = 4;
+      let timer = setInterval(() => {
+        i--;
+        this.info.title = `${i}秒后开始赠送...`;
+        if (i === 1) {
+          this.info.show = false;
+          clearInterval(timer);
+          init().then(res => {
+            if (res) {
+              this.upData();
+            }
+          });
+        }
+      }, 1000);
+    }
+  }
+  upData() {
     this.$store.dispatch('getgift');
     this.$store.dispatch('getFansList');
+  }
+  created() {
+    this.upData();
   }
 }
 </script>

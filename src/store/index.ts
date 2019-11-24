@@ -114,13 +114,6 @@ export default new Vuex.Store({
     },
     getFansList({ commit, state }) {
       state.loading = true;
-      interface Fans {
-        name: string;
-        intimacy: string;
-        today: string;
-        ranking: string;
-        send: string; // 赠送比例
-      }
       axios
         .get('https://www.douyu.com/member/cp/getFansBadgeList')
         .then(res => {
@@ -133,7 +126,8 @@ export default new Vuex.Store({
               intimacy: '',
               today: '',
               ranking: '',
-              send: ''
+              send: '',
+              roomid: ''
             };
             (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>)
               .slice(1, 5)
@@ -142,6 +136,8 @@ export default new Vuex.Store({
                 switch (index) {
                   case 0:
                     obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    val.match(/href="\/([\s\S]*?)"/);
+                    obj.roomid = RegExp.$1;
                     break;
                   case 1:
                     obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
