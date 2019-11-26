@@ -35,7 +35,6 @@ function createWindow() {
     createProtocol('app');
     win.loadURL('app://./index.html');
   }
-  win.webContents.openDevTools();
   win.on('closed', () => {
     win = null;
   });
