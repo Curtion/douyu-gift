@@ -74,11 +74,11 @@ export default class user extends Vue {
   @Watch('gift.num')
   onChangeValue(newval: number) {
     if (newval > 0) {
-      this.info.show = true;
       let i = 4;
       let timer = setInterval(() => {
         i--;
         this.info.title = `${i}秒后开始赠送...`;
+        this.info.show = true;
         if (i === 1) {
           this.info.show = false;
           clearInterval(timer);

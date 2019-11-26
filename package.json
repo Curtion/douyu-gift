@@ -1,6 +1,8 @@
 {
   "name": "douyu",
-  "version": "0.1.0",
+  "version": "2.0.0",
+  "author": "Curtion",
+  "description": "斗鱼自动赠送荧光棒",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

@@ -1,24 +1,20 @@
-# douyu
+# 说明
 
-## Project setup
-```
-yarn install
-```
+使用 Vue + ElementUI + TypeScript 驱动，仅用于学习用途。这是第二版，第一版使用了 jQuery + Electron；
+第二版从代码上更清晰，但是功能不变，仍然只是自动赠送荧光棒。
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+# 克隆
 
-### Compiles and minifies for production
-```
-yarn build
-```
+`https://github.com/Curtion/douyu-gift.git`
 
-### Lints and fixes files
-```
-yarn lint
-```
+# 安装
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+`yarn install`
+
+# 开发
+
+`yarn electron:serve`
+
+# 构建
+
+`yarn electron:build`
