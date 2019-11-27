@@ -10,7 +10,7 @@ module.exports = {
         },
         win: {
           //win相关配置
-          icon: './home.ico', //图标，当前图标在根目录下，注意这里有两个坑
+          icon: './src/assets/home.ico', //图标，当前图标在根目录下，注意这里有两个坑
           target: [
             {
               target: 'nsis', //利用nsis制作安装程序
