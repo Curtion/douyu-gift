@@ -71,29 +71,32 @@ export default class user extends Vue {
   get fans() {
     return this.$store.state.fans;
   }
-  @Watch('gift.num')
-  onChangeValue(newval: number) {
-    if (newval > 0) {
-      let i = 4;
-      let timer = setInterval(() => {
-        i--;
-        this.info.title = `${i}秒后开始赠送...`;
-        this.info.show = true;
-        if (i === 1) {
-          this.info.show = false;
-          clearInterval(timer);
-          init().then(res => {
-            if (res) {
-              this.upData();
-            }
-          });
-        }
-      }, 1000);
-    }
-  }
   upData() {
-    this.$store.dispatch('getgift');
-    this.$store.dispatch('getFansList');
+    this.$store
+      .dispatch('getgift')
+      .then(() => {
+        return this.$store.dispatch('getFansList');
+      })
+      .then(() => {
+        if (this.gift.num > 0) {
+          let i = 4;
+          let timer = setInterval(() => {
+            i--;
+            this.info.title = `${i}秒后开始赠送...`;
+            this.info.show = true;
+            if (i === 1) {
+              this.info.show = false;
+              clearInterval(timer);
+              init().then(res => {
+                if (res) {
+                  this.upData();
+                }
+              });
+            }
+          }, 1000);
+        }
+      })
+      .catch(() => {});
   }
   created() {
     this.upData();

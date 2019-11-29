@@ -85,81 +85,95 @@ export default new Vuex.Store({
      * @param {*} { commit }
      */
     getgift({ commit }) {
-      let params: FormData = new FormData();
-      params.append('rid', '4120796');
-      axios
-        .post('https://www.douyu.com/member/prop/query', params, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then(res => {
-          let isOn: boolean = false;
-          let index: number = 0;
-          isOn = res.data.data.list.some((element: any, i: number) => {
-            if (element.prop_id === 268) {
-              index = i;
-              return true;
+      return new Promise((resolve, reject) => {
+        let params: FormData = new FormData();
+        params.append('rid', '4120796');
+        axios
+          .post('https://www.douyu.com/member/prop/query', params, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
             }
-          });
-          if (isOn) {
-            commit('gift', {
-              num: res.data.data.list[index].count,
-              gif: res.data.data.list[index].gif
+          })
+          .then(res => {
+            let isOn: boolean = false;
+            let index: number = 0;
+            isOn = res.data.data.list.some((element: any, i: number) => {
+              if (element.prop_id === 268) {
+                index = i;
+                return true;
+              }
             });
-          } else {
-            commit('gift', { num: 0, git: '' });
-          }
-        });
+            if (isOn) {
+              commit('gift', {
+                num: res.data.data.list[index].count,
+                gif: res.data.data.list[index].gif
+              });
+            } else {
+              commit('gift', { num: 0, git: '' });
+            }
+          })
+          .catch(() => {
+            reject();
+          });
+        resolve();
+      });
     },
     getFansList({ commit, state }) {
-      state.loading = true;
-      axios
-        .get('https://www.douyu.com/member/cp/getFansBadgeList')
-        .then(res => {
-          let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
-          let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
-          let arr: Array<Object> = [];
-          list.slice(1).forEach((element: string) => {
-            let obj: Fans = {
-              name: '',
-              intimacy: '',
-              today: '',
-              ranking: '',
-              send: '',
-              roomid: ''
-            };
-            (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>)
-              .slice(1, 5)
-              .forEach((val: string, index: number) => {
-                obj.send = '';
-                switch (index) {
-                  case 0:
-                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    val.match(/href="\/([\s\S]*?)"/);
-                    obj.roomid = RegExp.$1;
-                    break;
-                  case 1:
-                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  case 2:
-                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  case 3:
-                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  default:
-                    break;
-                }
-              });
-            arr.push(obj);
+      return new Promise((resolve, reject) => {
+        state.loading = true;
+        axios
+          .get('https://www.douyu.com/member/cp/getFansBadgeList')
+          .then(res => {
+            let table = res.data.match(
+              /fans-badge-list">([\S\s]*?)<\/table>/
+            )[1];
+            let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
+            let arr: Array<Object> = [];
+            list.slice(1).forEach((element: string) => {
+              let obj: Fans = {
+                name: '',
+                intimacy: '',
+                today: '',
+                ranking: '',
+                send: '',
+                roomid: ''
+              };
+              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>)
+                .slice(1, 5)
+                .forEach((val: string, index: number) => {
+                  obj.send = '';
+                  switch (index) {
+                    case 0:
+                      obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
+                      val.match(/href="\/([\s\S]*?)"/);
+                      obj.roomid = RegExp.$1;
+                      break;
+                    case 1:
+                      obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
+                      break;
+                    case 2:
+                      obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
+                      break;
+                    case 3:
+                      obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
+                      break;
+                    default:
+                      break;
+                  }
+                });
+              arr.push(obj);
+            });
+            arr.forEach((ele: any) => {
+              ele.send = Math.floor(100 / arr.length) + '%';
+            });
+            state.loading = false;
+            commit('fans', arr);
+            resolve();
+          })
+          .catch(() => {
+            reject();
           });
-          arr.forEach((ele: any) => {
-            ele.send = Math.floor(100 / arr.length) + '%';
-          });
-          state.loading = false;
-          commit('fans', arr);
-        });
+      });
     }
   }
 });
