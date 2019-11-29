@@ -89,7 +89,9 @@ export default class user extends Vue {
               clearInterval(timer);
               init().then(res => {
                 if (res) {
-                  this.upData();
+                  setTimeout(() => {
+                    this.upData();
+                  }, 1000);
                 }
               });
             }
