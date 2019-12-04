@@ -1,46 +1,27 @@
-name: vue-electron-build
+name: Build/release
 
-on:
-  push:
-    tags:
-      - "v*.*.*"
+on: push
 
 jobs:
-  build:
-    name: build-electron
-    runs-on: ubuntu-latest
+  release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-2019, ubuntu-18.04]
 
     steps:
-      - name: Extract tag name
-        shell: bash
-        run: echo "##[set-output name=tag;]$(echo ${GITHUB_REF#refs/tag/})"
-        id: extract_tag
+      - name: Check out Git repository
+        uses: actions/checkout@v1
 
-      - name: Checkout code
-        uses: actions/checkout@master
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
         with:
-          tag_name: ${{ steps.extract_tag.outputs.tag }}
-          release_name: Release ${{ steps.extract_tag.outputs.tag }}
-          body: |
-            Changes in this Release
-            - First Change
-            - Second Change
-          draft: false
-          prerelease: false
+          node-version: 10
 
-      - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./my-artifact.zip
-          asset_name: my-artifact.zip
-          asset_content_type: application/zip
+          github_token: ${{ secrets.github_token }}
+
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}

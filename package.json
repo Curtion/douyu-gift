@@ -21,7 +21,6 @@
     "electron-referer": "^0.3.0",
     "element-ui": "^2.12.0",
     "node-sass": "^4.13.0",
-    "package-version-git-tag": "^2.0.2",
     "sass-loader": "^8.0.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
