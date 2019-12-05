@@ -3,7 +3,7 @@ name: Build/release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -23,8 +23,8 @@ jobs:
           node-version: 10
 
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
+        run: |
+          yarn install
+          yarn electron:build --publish always

@@ -13,7 +13,7 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
+  "main": "background.ts",
   "dependencies": {
     "axios": "^0.19.0",
     "core-js": "^3.3.2",
@@ -35,16 +35,16 @@
     "@vue/cli-service": "^4.0.0",
     "@vue/eslint-config-prettier": "^5.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
+    "electron": "6.0.0",
     "electron-chromedriver": "^7.0.0",
+    "electron-referer": "^0.3.0",
     "eslint": "^5.16.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
     "prettier": "^1.18.2",
     "typescript": "~3.5.3",
     "vue-cli-plugin-electron-builder": "^1.4.1",
-    "vue-template-compiler": "^2.6.10",
-    "electron": "6.0.0",
-    "electron-referer": "^0.3.0"
+    "vue-template-compiler": "^2.6.10"
   },
   "eslintConfig": {
     "root": true,
