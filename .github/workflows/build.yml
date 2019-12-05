@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
-          - name: Temporarily fix electron-builder
       - name: Build/release Electron app
         env:
           GH_TOKEN: ${{ secrets.github_token }}
