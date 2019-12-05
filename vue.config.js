@@ -2,6 +2,7 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
+        publish: ['github'],
         appId: 'com.3gxk.app',
         productName: '斗鱼续牌工具', //项目名
         copyright: 'Copyright © 2014-2019', //版权信息

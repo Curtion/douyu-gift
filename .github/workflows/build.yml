@@ -21,10 +21,11 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
-
+          - name: Temporarily fix electron-builder
       - name: Build/release Electron app
         env:
           GH_TOKEN: ${{ secrets.github_token }}
         run: |
           yarn install
+          sed -i 's/\^\[\\w/\^\[.\\w/g' node_modules/builder-util/out/util.js
           yarn electron:build --publish always
