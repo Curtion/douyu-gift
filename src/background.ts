@@ -1,5 +1,4 @@
 'use strict';
-const path = require('path');
 import { app, protocol, BrowserWindow } from 'electron';
 import electron from 'electron';
 import {

@@ -63,11 +63,27 @@ export default class home extends Vue {
     return this.$store.state.fans;
   }
   @Watch('run')
-  onChangeValue(newval: boolean, oldval: boolean) {
-    this.$message('暂无实现');
+  onRunChange(newval: boolean, oldval: boolean) {
     if (newval === false) {
       this.close = false;
     }
+  }
+  @Watch('close')
+  onCloseChange(newval: boolean, oldval: boolean) {
+    (this as any).$db.update(
+      {
+        _id: (this as any).$id
+      },
+      {
+        close: newval
+      },
+      {},
+      (err: Error, res: any) => {
+        if (res !== 1) {
+          this.$message(err);
+        }
+      }
+    );
   }
 }
 </script>
