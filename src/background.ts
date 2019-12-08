@@ -7,6 +7,12 @@ import {
 } from 'vue-cli-plugin-electron-builder/lib';
 import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
+const AutoLaunch = require('auto-launch'); // 自动启动
+let douyuAutoLauncher = new AutoLaunch({
+  name: 'douyu-git'
+});
+douyuAutoLauncher.enable();
+
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let win: BrowserWindow | null;

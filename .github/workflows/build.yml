@@ -3,7 +3,7 @@ name: Build/release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
 
 jobs:
   release:
@@ -21,10 +21,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
-
       - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        env:
+          GH_TOKEN: ${{ secrets.github_token }}
+        run: |
+          yarn install
+          (Get-Content "node_modules/builder-util/out/util.js").Replace("^[\w","^[.\w")| out-file "node_modules/builder-util/out/util.js"
+          yarn electron:build --publish always

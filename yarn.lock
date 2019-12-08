@@ -1506,6 +1506,11 @@ app-builder-lib@21.2.0, app-builder-lib@~21.2.0:
     semver "^6.3.0"
     temp-file "^3.3.4"
 
+applescript@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npm.taobao.org/applescript/download/applescript-1.0.0.tgz#bb87af568cad034a4e48c4bdaf6067a3a2701317"
+  integrity sha1-u4evVoytA0pOSMS9r2Bno6JwExc=
+
 aproba@^1.0.3, aproba@^1.1.1:
   version "1.2.0"
   resolved "https://registry.npm.taobao.org/aproba/download/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
@@ -9512,6 +9517,11 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
+untildify@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.npm.taobao.org/untildify/download/untildify-3.0.3.tgz#1e7b42b140bcfd922b22e70ca1265bfe3634c7c9"
+  integrity sha1-HntCsUC8/ZIrIucMoSZb/jY0x8k=
+
 unzip-crx@^0.2.0:
   version "0.2.0"
   resolved "https://registry.npm.taobao.org/unzip-crx/download/unzip-crx-0.2.0.tgz#4c0baa8bdac756256754beca7843c13d7b858c18"
@@ -10027,6 +10037,11 @@ widest-line@^2.0.0:
   integrity sha1-dDh2RzDsfvQ4HOTfgvuYpTFCo/w=
   dependencies:
     string-width "^2.1.1"
+
+winreg@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.npm.taobao.org/winreg/download/winreg-1.2.4.tgz#ba065629b7a925130e15779108cf540990e98d1b"
+  integrity sha1-ugZWKbepJRMOFXeRCM9UCZDpjRs=
 
 word-wrap@~1.2.3:
   version "1.2.3"
