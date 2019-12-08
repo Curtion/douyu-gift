@@ -3,7 +3,7 @@
     <div v-if="isLogin" class="login">
       <div class="box-card">
         <span>设置：</span>
-        <el-checkbox v-model="run">开机启动</el-checkbox>
+        <el-checkbox v-model="run" @change="onRunChange">开机启动</el-checkbox>
         <el-checkbox v-model="close" :disabled="!run"
           >任务完成后自动关闭</el-checkbox
         >
@@ -46,6 +46,7 @@
 </template>
 <script lang="ts">
 const { BrowserWindow } = require('electron').remote;
+const { ipcRenderer } = require('electron');
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import login from '../components/nologin.vue';
 @Component({
@@ -62,28 +63,35 @@ export default class home extends Vue {
   get fans() {
     return this.$store.state.fans;
   }
-  @Watch('run')
-  onRunChange(newval: boolean, oldval: boolean) {
-    if (newval === false) {
+  onRunChange(val: boolean) {
+    if (val === false) {
       this.close = false;
+    }
+    const status = ipcRenderer.sendSync('AutoLaunch', Number(val));
+    if (status !== true) {
+      this.$message(status);
     }
   }
   @Watch('close')
   onCloseChange(newval: boolean, oldval: boolean) {
     (this as any).$db.update(
-      {
-        _id: (this as any).$id
-      },
-      {
-        close: newval
-      },
+      { _id: (this as any).$id },
+      { close: newval },
       {},
       (err: Error, res: any) => {
         if (res !== 1) {
-          this.$message(err);
+          this.$message(err.toString());
         }
       }
     );
+  }
+  created() {
+    let status = ipcRenderer.sendSync('AutoLaunch', 3);
+    if (typeof status === 'boolean') {
+      this.run = status;
+    } else {
+      this.$message(status);
+    }
   }
 }
 </script>

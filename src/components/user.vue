@@ -48,6 +48,7 @@
   </div>
 </template>
 <script lang="ts">
+const { app } = require('electron').remote;
 import { Vue, Component, Watch } from 'vue-property-decorator';
 import init from '../function/send';
 interface alertInfo {
@@ -91,6 +92,14 @@ export default class user extends Vue {
                 if (res) {
                   setTimeout(() => {
                     this.upData();
+                    (this as any).$db.find(
+                      { _id: (this as any).$id },
+                      (err: Error, res: any) => {
+                        if (res[0].close) {
+                          app.quit();
+                        }
+                      }
+                    );
                   }, 1000);
                 }
               });
