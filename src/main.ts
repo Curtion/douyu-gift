@@ -5,7 +5,7 @@ import store from './store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 let Datastore = require('nedb'),
-  db = new Datastore({ filename: 'path/to/config.json', autoload: true });
+  db = new Datastore({ filename: 'config.json', autoload: true });
 Vue.config.productionTip = false;
 
 Vue.use(ElementUI);
