@@ -6,14 +6,15 @@
         <img :src="user.level" alt="账号等级" />
       </div>
       <div>
-        <span v-if="gift.num !== 0" class="gift"
-          ><img
+        <span v-if="gift.num !== 0" class="gift">
+          <img
             :src="gift.gif"
             alt="荧光棒"
             height="16"
             style="margin-right:5px;"
-          />剩余：{{ gift.num }}</span
-        >
+          />
+          剩余：{{ gift.num }}
+        </span>
         <span v-else>
           <el-tag type="success" size="mini">任务已完成</el-tag>
         </span>
@@ -29,19 +30,30 @@
       :closable="false"
       center
       show-icon
-    >
-    </el-alert>
+    ></el-alert>
     <main class="main">
       <el-scrollbar class="scrollbar">
         <el-table :data="fans" style="width: 100%">
-          <el-table-column prop="name" label="主播" align="center">
-          </el-table-column>
-          <el-table-column prop="intimacy" label="亲密值" align="center">
-          </el-table-column>
-          <el-table-column prop="today" label="今日亲密度" align="center">
-          </el-table-column>
-          <el-table-column prop="ranking" label="排名" align="center">
-          </el-table-column>
+          <el-table-column
+            prop="name"
+            label="主播"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="intimacy"
+            label="亲密值"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="today"
+            label="今日亲密度"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="ranking"
+            label="排名"
+            align="center"
+          ></el-table-column>
         </el-table>
       </el-scrollbar>
     </main>
@@ -50,7 +62,11 @@
 <script lang="ts">
 const { app } = require('electron').remote;
 import { Vue, Component, Watch } from 'vue-property-decorator';
+const { BrowserWindow } = require('electron').remote;
 import init from '../function/send';
+interface windows {
+  [propName: string]: any;
+}
 interface alertInfo {
   title: string;
   type: string;
@@ -58,6 +74,7 @@ interface alertInfo {
 }
 @Component({})
 export default class user extends Vue {
+  win: windows = {};
   info: alertInfo = {
     title: '',
     type: 'info',
@@ -110,7 +127,26 @@ export default class user extends Vue {
       .catch(() => {});
   }
   created() {
-    this.upData();
+    this.info.title = '正在检测并领取荧光棒...';
+    this.info.show = true;
+    this.win = new BrowserWindow({
+      width: 1200,
+      height: 800,
+      webPreferences: {
+        nodeIntegration: true,
+        webSecurity: false
+      },
+      resizable: false,
+      show: false
+    });
+    this.win.loadURL('https://www.douyu.com/4120796');
+    this.win.on('closed', () => {
+      this.upData();
+    });
+    setTimeout(() => {
+      this.win.close();
+      this.info.show = false;
+    }, 10000);
   }
 }
 </script>
