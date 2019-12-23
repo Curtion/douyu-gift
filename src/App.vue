@@ -4,21 +4,23 @@
       <el-aside id="aside" width="20%">
         <ul>
           <li :class="{ isActive: Active === 'home' }" @click="push('')">
-            <i class="el-icon-s-home"></i><span class="name">首页</span>
+            <i class="el-icon-s-home"></i>
+            <span class="name">首页</span>
           </li>
-          <li
-            :class="{ isActive: Active === 'config' }"
-            @click="push('config')"
-          >
-            <i class="el-icon-s-tools"></i><span class="name">任务配置</span>
+          <li :class="{ isActive: Active === 'config' }" @click="push('config')">
+            <i class="el-icon-s-tools"></i>
+            <span class="name">任务配置</span>
           </li>
           <li :class="{ isActive: Active === 'about' }" @click="push('about')">
-            <i class="el-icon-info"></i><span class="name">关于我</span>
+            <i class="el-icon-info"></i>
+            <span class="name">关于我</span>
           </li>
         </ul>
       </el-aside>
       <el-container>
-        <el-main id="main" v-loading="loading"> <router-view /> </el-main>
+        <el-main id="main" v-loading="loading">
+          <router-view />
+        </el-main>
       </el-container>
     </el-container>
   </div>

@@ -7,12 +7,7 @@
       </div>
       <div>
         <span v-if="gift.num !== 0" class="gift">
-          <img
-            :src="gift.gif"
-            alt="荧光棒"
-            height="16"
-            style="margin-right:5px;"
-          />
+          <img :src="gift.gif" alt="荧光棒" height="16" style="margin-right:5px;" />
           剩余：{{ gift.num }}
         </span>
         <span v-else>
@@ -23,37 +18,14 @@
         <el-button type="info" size="mini">切换账号</el-button>
       </div>
     </header>
-    <el-alert
-      :title="info.title"
-      :type="info.type"
-      v-if="info.show"
-      :closable="false"
-      center
-      show-icon
-    ></el-alert>
+    <el-alert :title="info.title" :type="info.type" v-if="info.show" :closable="false" center show-icon></el-alert>
     <main class="main">
       <el-scrollbar class="scrollbar">
         <el-table :data="fans" style="width: 100%">
-          <el-table-column
-            prop="name"
-            label="主播"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="intimacy"
-            label="亲密值"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="today"
-            label="今日亲密度"
-            align="center"
-          ></el-table-column>
-          <el-table-column
-            prop="ranking"
-            label="排名"
-            align="center"
-          ></el-table-column>
+          <el-table-column prop="name" label="主播" align="center"></el-table-column>
+          <el-table-column prop="intimacy" label="亲密值" align="center"></el-table-column>
+          <el-table-column prop="today" label="今日亲密度" align="center"></el-table-column>
+          <el-table-column prop="ranking" label="排名" align="center"></el-table-column>
         </el-table>
       </el-scrollbar>
     </main>
@@ -110,7 +82,9 @@ export default class user extends Vue {
                   setTimeout(() => {
                     this.upData();
                     (this as any).$db.find(
-                      { _id: (this as any).$id },
+                      {
+                        _id: (this as any).$id
+                      },
                       (err: Error, res: any) => {
                         if (res[0].close) {
                           app.quit();

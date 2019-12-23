@@ -9,6 +9,12 @@ import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
+let Datastore = require('nedb');
+let db = new Datastore({
+  filename: 'config.db',
+  autoload: true
+});
+(global as any).db = db;
 let win: BrowserWindow | null;
 
 // Scheme must be registered before the app is ready
