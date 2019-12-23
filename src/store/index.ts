@@ -16,7 +16,8 @@ export default new Vuex.Store({
       gif: '' // 荧光棒礼物图标地址
     },
     fans: [], // 粉丝牌数据,
-    loading: false
+    loading: false,
+    isStart: false // 任务是否正在进行
   },
   mutations: {
     /**
@@ -48,8 +49,16 @@ export default new Vuex.Store({
       state.gift.num = num;
       state.gift.gif = gif;
     },
+    /**
+     * 粉丝牌数据
+     * @param {*} state
+     * @param {*} payload
+     */
     fans(state, payload) {
       state.fans = payload;
+    },
+    isStart(state, payload: boolean) {
+      state.isStart = payload;
     }
   },
   actions: {
@@ -124,9 +133,7 @@ export default new Vuex.Store({
         axios
           .get('https://www.douyu.com/member/cp/getFansBadgeList')
           .then(res => {
-            let table = res.data.match(
-              /fans-badge-list">([\S\s]*?)<\/table>/
-            )[1];
+            let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
             let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
             let arr: Array<Object> = [];
             list.slice(1).forEach((element: string) => {
@@ -138,29 +145,27 @@ export default new Vuex.Store({
                 send: '',
                 roomid: ''
               };
-              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>)
-                .slice(1, 5)
-                .forEach((val: string, index: number) => {
-                  obj.send = '';
-                  switch (index) {
-                    case 0:
-                      obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
-                      val.match(/href="\/([\s\S]*?)"/);
-                      obj.roomid = RegExp.$1;
-                      break;
-                    case 1:
-                      obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
-                      break;
-                    case 2:
-                      obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
-                      break;
-                    case 3:
-                      obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
-                      break;
-                    default:
-                      break;
-                  }
-                });
+              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
+                obj.send = '';
+                switch (index) {
+                  case 0:
+                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    val.match(/href="\/([\s\S]*?)"/);
+                    obj.roomid = RegExp.$1;
+                    break;
+                  case 1:
+                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  case 2:
+                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  case 3:
+                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  default:
+                    break;
+                }
+              });
               arr.push(obj);
             });
             arr.forEach((ele: any) => {

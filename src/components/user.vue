@@ -81,6 +81,7 @@ export default class user extends Vue {
                 if (res) {
                   setTimeout(() => {
                     this.upData();
+                    this.$store.commit('isStart', false);
                     (this as any).$db.find(
                       {
                         _id: (this as any).$id
@@ -96,31 +97,36 @@ export default class user extends Vue {
               });
             }
           }, 1000);
+        } else {
+          this.$store.commit('isStart', false);
         }
       })
       .catch(() => {});
   }
   created() {
-    this.info.title = '正在检测并领取荧光棒...';
-    this.info.show = true;
-    this.win = new BrowserWindow({
-      width: 1200,
-      height: 800,
-      webPreferences: {
-        nodeIntegration: true,
-        webSecurity: false
-      },
-      resizable: false,
-      show: false
-    });
-    this.win.loadURL('https://www.douyu.com/4120796');
-    this.win.on('closed', () => {
-      this.upData();
-    });
-    setTimeout(() => {
-      this.win.close();
-      this.info.show = false;
-    }, 10000);
+    if (!this.$store.state.isStart) {
+      this.info.title = '正在检测并领取荧光棒...';
+      this.info.show = true;
+      this.$store.commit('isStart', true);
+      this.win = new BrowserWindow({
+        width: 1200,
+        height: 800,
+        webPreferences: {
+          nodeIntegration: true,
+          webSecurity: false
+        },
+        resizable: false,
+        show: false
+      });
+      this.win.loadURL('https://www.douyu.com/4120796');
+      this.win.on('closed', () => {
+        this.upData();
+      });
+      setTimeout(() => {
+        this.win.close();
+        this.info.show = false;
+      }, 10000);
+    }
   }
 }
 </script>
