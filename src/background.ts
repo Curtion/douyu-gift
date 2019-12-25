@@ -1,26 +1,21 @@
 'use strict';
 import { app, protocol, BrowserWindow } from 'electron';
 import electron from 'electron';
-import {
-  createProtocol,
-  installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib';
+import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let Datastore = require('nedb');
 let db = new Datastore({
-  filename: 'config.db',
+  filename: './config.db',
   autoload: true
 });
 (global as any).db = db;
 let win: BrowserWindow | null;
 
 // Scheme must be registered before the app is ready
-protocol.registerSchemesAsPrivileged([
-  { scheme: 'app', privileges: { secure: true, standard: true } }
-]);
+protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 function createWindow() {
   electron.Menu.setApplicationMenu(null);
