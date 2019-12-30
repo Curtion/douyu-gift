@@ -8,12 +8,11 @@ const isDevelopment = process.env.NODE_ENV !== 'production';
 
 let Datastore = require('nedb');
 let db = new Datastore({
-  filename: './config.db',
+  filename: app.getAppPath() + '/config.db',
   autoload: true
 });
 (global as any).db = db;
 let win: BrowserWindow | null;
-
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
