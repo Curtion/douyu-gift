@@ -4,11 +4,13 @@ import electron from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
+const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
-
 let Datastore = require('nedb');
+let paths = process.execPath.split('\\');
+paths.pop();
 let db = new Datastore({
-  filename: app.getAppPath() + '/config.db',
+  filename: path.join(paths.join('\\'), '/config.db'),
   autoload: true
 });
 (global as any).db = db;
