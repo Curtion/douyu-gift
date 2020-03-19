@@ -1,3 +1,9 @@
+功能： 自动平均分配荧光棒，开机自动启动，任务完成后自动关闭软件。
+
+![](./doc/img.jpg)
+
+
+
 # 说明
 
 使用 Vue + ElementUI + TypeScript 驱动，仅用于学习用途。这是第二版，第一版使用了 jQuery + Electron；
