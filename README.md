@@ -2,7 +2,7 @@
 
 ![](./doc/img.jpg)
 
-
+[点击这里进行下载](https://github.com/Curtion/douyu-gift/releases)
 
 # 说明
 
