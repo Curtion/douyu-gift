@@ -87,9 +87,11 @@ export default class user extends Vue {
                         _id: (this as any).$id
                       },
                       (err: Error, res: any) => {
-                        if (res[0].close) {
-                          app.quit();
-                        }
+                        this.$store.dispatch('getFansList', true).then(() => {
+                          if (res[0].close) {
+                            app.quit();
+                          }
+                        });
                       }
                     );
                   }, 1000);

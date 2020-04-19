@@ -18,7 +18,7 @@
                 <i class="el-icon-question" title="默认平均分配，注意比例一定要等于100%。自动赠送时数量均向下取整。"></i>
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.send" size="mini" placeholder="输入赠送比例" style="width:60%;" :disabled="true"></el-input>
+                <el-input v-model="scope.row.send" @change="onChange" size="mini" placeholder="输入赠送比例" style="width:60%;"></el-input>
               </template>
             </el-table-column>
           </el-table>
@@ -56,6 +56,26 @@ export default class home extends Vue {
     const status = ipcRenderer.sendSync('AutoLaunch', Number(val));
     if (status !== true) {
       this.$message(status);
+    }
+  }
+  onChange(val: string) {
+    if (!/(.*)%/.test(val)) {
+      this.$message('格式不正确');
+    } else {
+      let count = 0;
+      this.fans.forEach((element: any) => {
+        count = Number(element.send.split('%')[0]) * 0.01 + count;
+      });
+      if (count !== 1) {
+        this.$message('百分比合计不为100%');
+      } else {
+        this.$store.dispatch('saveNumberConfig', this.fans).then(() => {
+          this.$message({
+            type: 'success',
+            message: '配置成功'
+          });
+        });
+      }
     }
   }
   @Watch('close')

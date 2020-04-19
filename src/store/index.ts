@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import { Message } from 'element-ui';
+import vm from '../main';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -127,57 +128,78 @@ export default new Vuex.Store({
         resolve();
       });
     },
-    getFansList({ commit, state }) {
+    getFansList({ commit, dispatch, state }, isLoad = false) {
       return new Promise((resolve, reject) => {
         state.loading = true;
-        axios
-          .get('https://www.douyu.com/member/cp/getFansBadgeList')
-          .then(res => {
-            let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
-            let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
-            let arr: Array<Object> = [];
-            list.slice(1).forEach((element: string) => {
-              let obj: Fans = {
-                name: '',
-                intimacy: '',
-                today: '',
-                ranking: '',
-                send: '',
-                roomid: ''
-              };
-              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
-                obj.send = '';
-                switch (index) {
-                  case 0:
-                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    val.match(/href="\/([\s\S]*?)"/);
-                    obj.roomid = RegExp.$1;
-                    break;
-                  case 1:
-                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  case 2:
-                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  case 3:
-                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
-                  default:
-                    break;
-                }
+        (vm as any).$db.findOne({ _id: (vm as any).$id }, (err: Error, data: any) => {
+          if (data.config === undefined || isLoad === true) {
+            axios
+              .get('https://www.douyu.com/member/cp/getFansBadgeList')
+              .then(async res => {
+                let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
+                let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
+                let arr: Array<Object> = [];
+                list.slice(1).forEach((element: string) => {
+                  let obj: Fans = {
+                    name: '',
+                    intimacy: '',
+                    today: '',
+                    ranking: '',
+                    send: '',
+                    roomid: ''
+                  };
+                  (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
+                    obj.send = '';
+                    switch (index) {
+                      case 0:
+                        obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
+                        val.match(/href="\/([\s\S]*?)"/);
+                        obj.roomid = RegExp.$1;
+                        break;
+                      case 1:
+                        obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
+                        break;
+                      case 2:
+                        obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
+                        break;
+                      case 3:
+                        obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
+                        break;
+                      default:
+                        break;
+                    }
+                  });
+                  arr.push(obj);
+                });
+                arr.forEach((ele: any) => {
+                  ele.send = Math.floor(100 / arr.length) + '%';
+                });
+                state.loading = false;
+                commit('fans', arr);
+                dispatch('saveNumberConfig', arr);
+                resolve();
+              })
+              .catch(() => {
+                reject();
               });
-              arr.push(obj);
-            });
-            arr.forEach((ele: any) => {
-              ele.send = Math.floor(100 / arr.length) + '%';
-            });
+          } else {
+            commit('fans', data.config);
             state.loading = false;
-            commit('fans', arr);
             resolve();
-          })
-          .catch(() => {
-            reject();
-          });
+          }
+        });
+      });
+    },
+    /**
+     * 保存配置到文件
+     */
+    saveNumberConfig({ commit }, payload) {
+      (vm as any).$db.update({ _id: (vm as any).$id }, { config: payload }, {}, (err: Error, res: any) => {
+        if (res !== 1) {
+          vm.$message(err.toString());
+        } else {
+          commit('fans', payload);
+        }
       });
     }
   }

@@ -18,8 +18,9 @@ db.findOne({}, (err: Error, res: any) => {
   }
 });
 Vue.prototype.$db = db;
-new Vue({
+const vm = new Vue({
   router,
   store,
   render: h => h(App)
 }).$mount('#app');
+export default vm;

@@ -10,16 +10,21 @@ async function init() {
   let DySid = await getDyAndsid();
   const sid = (DySid as DyAndsid).sid;
   const dy = (DySid as DyAndsid).dy;
-  for (let item of store.state.fans) {
+  let Remaining = store.state.gift.num; // 剩余数量
+  for (let [index, item] of store.state.fans.entries()) {
+    let num = Math.floor(store.state.gift.num * Number.parseInt((item as Fans).send) * 0.01);
+    if (index === store.state.fans.length - 1) {
+      // 最后一次全部赠送，防止分配不均
+      num = Remaining;
+    }
     await pushGift({
       prop: 268,
       rid: (item as Fans).roomid,
-      num: Math.floor(
-        store.state.gift.num * Number.parseInt((item as Fans).send) * 0.01
-      ),
+      num,
       sid,
       dy
     });
+    Remaining = Remaining - num;
   }
   return true;
 }
