@@ -8,19 +8,21 @@ const db = require('electron').remote.getGlobal('db');
 Vue.config.productionTip = false;
 Vue.use(ElementUI);
 
-db.findOne({}, (err: Error, res: any) => {
-  if (res === null) {
-    db.insert({ close: false }, function(err: Error, ress: any) {
-      Vue.prototype.$id = ress._id;
-    }); // 初始化存储
-  } else {
-    Vue.prototype.$id = res._id;
-  }
-});
 Vue.prototype.$db = db;
 const vm = new Vue({
   router,
   store,
-  render: h => h(App)
+  render: h => h(App),
+  beforeCreate() {
+    db.find({}, (err: Error, res: any) => {
+      if (res.length === 0) {
+        db.insert({}, function(err: Error, ress: any) {
+          Vue.prototype.$id = ress._id;
+        }); // 初始化存储
+      } else {
+        Vue.prototype.$id = res[0]._id;
+      }
+    });
+  }
 }).$mount('#app');
 export default vm;

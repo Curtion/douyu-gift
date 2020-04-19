@@ -131,8 +131,8 @@ export default new Vuex.Store({
     getFansList({ commit, dispatch, state }, isLoad = false) {
       return new Promise((resolve, reject) => {
         state.loading = true;
-        (vm as any).$db.findOne({ _id: (vm as any).$id }, (err: Error, data: any) => {
-          if (data.config === undefined || isLoad === true) {
+        (vm as any).$db.find({ _id: (vm as any).$id }, (err: Error, data: any) => {
+          if (data[0].config === undefined || isLoad === true) {
             axios
               .get('https://www.douyu.com/member/cp/getFansBadgeList')
               .then(async res => {
@@ -183,7 +183,8 @@ export default new Vuex.Store({
                 reject();
               });
           } else {
-            commit('fans', data.config);
+            // 去掉nedb的getter和setter，和Vue的冲突了
+            commit('fans', JSON.parse(JSON.stringify(data[0].config)));
             state.loading = false;
             resolve();
           }
@@ -194,7 +195,7 @@ export default new Vuex.Store({
      * 保存配置到文件
      */
     saveNumberConfig({ commit }, payload) {
-      (vm as any).$db.update({ _id: (vm as any).$id }, { config: payload }, {}, (err: Error, res: any) => {
+      (vm as any).$db.update({ _id: (vm as any).$id }, { $set: { config: payload } }, {}, (err: Error, res: any) => {
         if (res !== 1) {
           vm.$message(err.toString());
         } else {

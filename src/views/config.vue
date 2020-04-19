@@ -85,7 +85,7 @@ export default class home extends Vue {
   }
   @Watch('close')
   onCloseChange(newval: boolean, oldval: boolean) {
-    (this as any).$db.update({ _id: (this as any).$id }, { close: newval }, {}, (err: Error, res: any) => {
+    (this as any).$db.update({ _id: (this as any).$id }, { $set: { close: newval } }, {}, (err: Error, res: any) => {
       if (res !== 1) {
         this.$message(err.toString());
       }
@@ -98,8 +98,8 @@ export default class home extends Vue {
     } else {
       this.$message(status);
     }
-    (this as any).$db.findOne({ _id: (this as any).$id }, (err: Error, res: any) => {
-      this.close = res.close;
+    (this as any).$db.find({ _id: (this as any).$id }, (err: Error, res: any) => {
+      this.close = res[0].close;
     });
   }
 }
