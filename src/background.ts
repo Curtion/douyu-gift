@@ -4,13 +4,15 @@ import electron from 'electron';
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib';
 import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
+// 兼容多平台
+const platform = process.platform === 'win32' ? '\\' : '/';
 const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
 let Datastore = require('nedb');
-let paths = process.execPath.split('\\');
+let paths = process.execPath.split(platform);
 paths.pop();
 let db = new Datastore({
-  filename: path.join(paths.join('\\'), '/config.db'),
+  filename: path.join(paths.join(platform), '/config.db'),
   autoload: true
 });
 (global as any).db = db;
