@@ -34,6 +34,7 @@
 const { BrowserWindow } = require('electron').remote;
 const { ipcRenderer } = require('electron');
 import { Vue, Component, Watch } from 'vue-property-decorator';
+const math = require('mathjs');
 import login from '../components/nologin.vue';
 @Component({
   components: {
@@ -64,8 +65,9 @@ export default class home extends Vue {
     } else {
       let count = 0;
       this.fans.forEach((element: any) => {
-        count = Number(element.send.split('%')[0]) * 0.01 + count;
+        count = math.add(math.multiply(Number(element.send.split('%')[0]), 0.01), count);
       });
+      count = this.strip(count);
       if (count !== 1) {
         this.$message('百分比合计不为100%');
       } else {
@@ -77,6 +79,9 @@ export default class home extends Vue {
         });
       }
     }
+  }
+  strip(num: number, precision = 12) {
+    return +parseFloat(num.toPrecision(precision));
   }
   @Watch('close')
   onCloseChange(newval: boolean, oldval: boolean) {
