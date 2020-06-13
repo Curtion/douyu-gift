@@ -62,11 +62,18 @@ export default class user extends Vue {
     return this.$store.state.fans;
   }
   upData() {
+    let fans = this.$db.get('fans');
+    if (!fans) {
+      this.$message({
+        type: 'error',
+        message: '请在“任务配置”选项卡中先配置任务'
+      });
+      return;
+    } else {
+      this.$store.commit('fans', JSON.parse(JSON.stringify(fans)));
+    }
     this.$store
       .dispatch('getgift')
-      .then(() => {
-        return this.$store.dispatch('getFansList');
-      })
       .then(() => {
         if (this.gift.num > 0) {
           let i = 4;
@@ -82,19 +89,11 @@ export default class user extends Vue {
                   setTimeout(() => {
                     this.upData();
                     this.$store.commit('isStart', false);
-                    (this as any).$db.find(
-                      {
-                        _id: (this as any).$id
-                      },
-                      (err: Error, res: any) => {
-                        this.$store.dispatch('getFansList', true).then(() => {
-                          if (res[0].close) {
-                            app.quit();
-                          }
-                        });
-                      }
-                    );
-                  }, 1000);
+                    let close = this.$db.get('close');
+                    if (close) {
+                      app.quit();
+                    }
+                  }, 5000);
                 }
               });
             }

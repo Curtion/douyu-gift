@@ -94,7 +94,7 @@ export default new Vuex.Store({
      *
      * @param {*} { commit }
      */
-    getgift({ commit }) {
+    getgift({ commit, dispatch }) {
       return new Promise((resolve, reject) => {
         let params: FormData = new FormData();
         params.append('rid', '4120796');
@@ -121,87 +121,73 @@ export default new Vuex.Store({
             } else {
               commit('gift', { num: 0, git: '' });
             }
+            dispatch('getFansList', false);
+            resolve();
           })
           .catch(() => {
             reject();
           });
-        resolve();
       });
     },
-    getFansList({ commit, dispatch, state }, isLoad = false) {
+    getFansList({ commit, state }, isLoad = true) {
       return new Promise((resolve, reject) => {
         state.loading = true;
-        (vm as any).$db.find({ _id: (vm as any).$id }, (err: Error, data: any) => {
-          if (data[0].config === undefined || isLoad === true) {
-            axios
-              .get('https://www.douyu.com/member/cp/getFansBadgeList')
-              .then(async res => {
-                let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
-                let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
-                let arr: Array<Object> = [];
-                list.slice(1).forEach((element: string) => {
-                  let obj: Fans = {
-                    name: '',
-                    intimacy: '',
-                    today: '',
-                    ranking: '',
-                    send: '',
-                    roomid: ''
-                  };
-                  (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
-                    obj.send = '';
-                    switch (index) {
-                      case 0:
-                        obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
-                        val.match(/href="\/([\s\S]*?)"/);
-                        obj.roomid = RegExp.$1;
-                        break;
-                      case 1:
-                        obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
-                        break;
-                      case 2:
-                        obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
-                        break;
-                      case 3:
-                        obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
-                        break;
-                      default:
-                        break;
-                    }
-                  });
-                  arr.push(obj);
-                });
-                arr.forEach((ele: any) => {
-                  ele.send = Math.floor(100 / arr.length) + '%';
-                });
-                state.loading = false;
-                commit('fans', arr);
-                dispatch('saveNumberConfig', arr);
-                resolve();
-              })
-              .catch(() => {
-                reject();
+        axios
+          .get('https://www.douyu.com/member/cp/getFansBadgeList')
+          .then(async res => {
+            let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
+            let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
+            let arr: Array<Object> = [];
+            list.slice(1).forEach((element: string) => {
+              let obj: Fans = {
+                name: '',
+                intimacy: '',
+                today: '',
+                ranking: '',
+                send: '',
+                roomid: ''
+              };
+              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
+                obj.send = '';
+                switch (index) {
+                  case 0:
+                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    val.match(/href="\/([\s\S]*?)"/);
+                    obj.roomid = RegExp.$1;
+                    break;
+                  case 1:
+                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  case 2:
+                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  case 3:
+                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
+                    break;
+                  default:
+                    break;
+                }
               });
-          } else {
-            // 去掉nedb的getter和setter，和Vue的冲突了
-            commit('fans', JSON.parse(JSON.stringify(data[0].config)));
+              arr.push(obj);
+            });
             state.loading = false;
+            commit('fans', arr);
+            if (isLoad) {
+              vm.$db.set('fans', arr);
+            }
             resolve();
-          }
-        });
+          })
+          .catch(() => {
+            reject();
+          });
       });
     },
     /**
      * 保存配置到文件
      */
     saveNumberConfig({ commit }, payload) {
-      (vm as any).$db.update({ _id: (vm as any).$id }, { $set: { config: payload } }, {}, (err: Error, res: any) => {
-        if (res !== 1) {
-          vm.$message(err.toString());
-        } else {
-          commit('fans', payload);
-        }
-      });
+      commit('fans', payload);
+      vm.$db.set('fans', payload);
     }
   }
 });

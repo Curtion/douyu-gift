@@ -6,18 +6,13 @@ import './main/rpc.ts'; // rpc订阅
 require('electron-referer')('https://www.douyu.com/');
 // 兼容多平台
 const platform = process.platform === 'win32' ? '\\' : '/';
-const path = require('path');
 const isDevelopment = process.env.NODE_ENV !== 'production';
-let Datastore = require('nedb');
+const Store = require('electron-store');
 let paths = process.execPath.split(platform);
 paths.pop();
-let db = new Datastore({
-  filename: path.join(paths.join(platform), '/config.db'),
-  autoload: true
-});
+const db = new Store();
 (global as any).db = db;
 let win: BrowserWindow | null;
-// Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { secure: true, standard: true } }]);
 
 function createWindow() {

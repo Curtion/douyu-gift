@@ -2,23 +2,29 @@
   <div class="content">
     <div v-if="isLogin" class="login">
       <div class="box-card">
-        <span>设置：</span>
-        <el-checkbox v-model="run" @change="onRunChange">开机启动</el-checkbox>
-        <el-checkbox v-model="close" :disabled="!run">任务完成后自动关闭</el-checkbox>
+        <span>
+          <span>设置：</span>
+          <el-checkbox v-model="run" @change="onRunChange">开机启动</el-checkbox>
+          <el-checkbox v-model="close" :disabled="!run">任务完成后自动关闭</el-checkbox>
+        </span>
+        <span>
+          <el-button size="mini" type="text" @click="updateFans">更新数据</el-button>
+        </span>
       </div>
       <main class="main">
         <el-scrollbar class="scrollbar">
           <el-table :data="fans" style="width: 100%">
             <el-table-column prop="name" label="主播" align="center"></el-table-column>
+            <el-table-column prop="roomid" label="房间号" align="center"></el-table-column>
             <el-table-column prop="intimacy" label="亲密值" align="center"></el-table-column>
             <el-table-column prop="ranking" label="排名" align="center"></el-table-column>
-            <el-table-column label="赠送比例" align="center">
+            <el-table-column label="赠送比例" align="center" width="160">
               <template slot="header">
                 <span>赠送比例</span>
                 <i class="el-icon-question" title="默认平均分配，注意比例一定要等于100%。自动赠送时数量均向下取整。"></i>
               </template>
               <template slot-scope="scope">
-                <el-input v-model="scope.row.send" @change="onChange" size="mini" placeholder="输入赠送比例" style="width:60%;"></el-input>
+                <el-input v-model="scope.row.send" @change="onChange" size="mini" placeholder="赠送比例" style="width:60%;"></el-input>
               </template>
             </el-table-column>
           </el-table>
@@ -60,6 +66,9 @@ export default class home extends Vue {
     }
   }
   onChange(val: string) {
+    let strip = (num: number, precision = 12) => {
+      return +parseFloat(num.toPrecision(precision));
+    };
     if (!/(.*)%/.test(val)) {
       this.$message('格式不正确');
     } else {
@@ -67,7 +76,7 @@ export default class home extends Vue {
       this.fans.forEach((element: any) => {
         count = math.add(math.multiply(Number(element.send.split('%')[0]), 0.01), count);
       });
-      count = this.strip(count);
+      count = strip(count);
       if (count !== 1) {
         this.$message('百分比合计不为100%');
       } else {
@@ -80,16 +89,12 @@ export default class home extends Vue {
       }
     }
   }
-  strip(num: number, precision = 12) {
-    return +parseFloat(num.toPrecision(precision));
+  updateFans() {
+    this.$store.dispatch('getFansList');
   }
   @Watch('close')
-  onCloseChange(newval: boolean, oldval: boolean) {
-    (this as any).$db.update({ _id: (this as any).$id }, { $set: { close: newval } }, {}, (err: Error, res: any) => {
-      if (res !== 1) {
-        this.$message(err.toString());
-      }
-    });
+  onCloseChange(newval: boolean) {
+    this.$db.set('close', newval);
   }
   created() {
     let status = ipcRenderer.sendSync('AutoLaunch', 3);
@@ -98,9 +103,13 @@ export default class home extends Vue {
     } else {
       this.$message(status);
     }
-    (this as any).$db.find({ _id: (this as any).$id }, (err: Error, res: any) => {
-      this.close = res[0].close;
-    });
+    this.close = this.$db.get('close');
+    let fans = this.$db.get('fans');
+    if (!fans) {
+      this.updateFans();
+    } else {
+      this.$store.commit('fans', JSON.parse(JSON.stringify(fans)));
+    }
   }
 }
 </script>
@@ -117,6 +126,7 @@ export default class home extends Vue {
     border-bottom: 1px #ccc solid;
     display: flex;
     align-items: center;
+    justify-content: space-between;
   }
 }
 .nologin {
