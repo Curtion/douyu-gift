@@ -69,8 +69,6 @@ export default class user extends Vue {
         message: '请在“任务配置”选项卡中先配置任务'
       });
       return;
-    } else {
-      this.$store.commit('fans', JSON.parse(JSON.stringify(fans)));
     }
     this.$store
       .dispatch('getgift')
@@ -84,7 +82,7 @@ export default class user extends Vue {
             if (i === 1) {
               this.info.show = false;
               clearInterval(timer);
-              init().then(res => {
+              init(fans).then(res => {
                 if (res) {
                   setTimeout(() => {
                     this.upData();
@@ -105,6 +103,7 @@ export default class user extends Vue {
       .catch(() => {});
   }
   created() {
+    this.$store.commit('fans', []);
     if (!this.$store.state.isStart) {
       this.info.title = '正在检测并领取荧光棒...';
       this.info.show = true;

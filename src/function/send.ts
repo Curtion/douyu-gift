@@ -6,14 +6,14 @@ interface DyAndsid {
   dy: string;
   sid: string;
 }
-async function init() {
+async function init(fans: any) {
   let DySid = await getDyAndsid();
   const sid = (DySid as DyAndsid).sid;
   const dy = (DySid as DyAndsid).dy;
   let Remaining = store.state.gift.num; // 剩余数量
-  for (let [index, item] of store.state.fans.entries()) {
+  for (let [index, item] of fans.entries()) {
     let num = Math.floor(store.state.gift.num * Number.parseInt((item as Fans).send) * 0.01);
-    if (index === store.state.fans.length - 1) {
+    if (index === fans.length - 1) {
       // 最后一次全部赠送，防止分配不均
       num = Remaining;
     }
