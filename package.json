@@ -38,7 +38,7 @@
     "@vue/cli-service": "^4.0.0",
     "@vue/eslint-config-prettier": "^5.0.0",
     "@vue/eslint-config-typescript": "^4.0.0",
-    "electron": "6.0.0",
+    "electron": "7.2.4",
     "electron-chromedriver": "^7.0.0",
     "electron-referer": "^0.3.0",
     "eslint": "^5.16.0",
