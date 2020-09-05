@@ -36,6 +36,7 @@ const { app } = require('electron').remote;
 import { Vue, Component, Watch } from 'vue-property-decorator';
 const { BrowserWindow } = require('electron').remote;
 import init from '../function/send';
+const CronJob = require('cron').CronJob;
 interface windows {
   [propName: string]: any;
 }
@@ -102,7 +103,7 @@ export default class user extends Vue {
       })
       .catch(() => {});
   }
-  created() {
+  start() {
     this.$store.commit('fans', []);
     if (!this.$store.state.isStart) {
       this.info.title = '正在检测并领取荧光棒...';
@@ -126,6 +127,18 @@ export default class user extends Vue {
         this.win.close();
         this.info.show = false;
       }, 10000);
+    }
+  }
+  created() {
+    this.start();
+    if (this.$db.get('timing') === true && this.$auto === null) {
+      const time = this.$db.get('runtime').split(':');
+      this.$auto = new CronJob(`${time[2]} ${time[1]} ${time[0]} * * *`, this.start.bind(this));
+      this.$auto.start();
+      this.$message({
+        type: 'success',
+        message: '已开启自动运行'
+      });
     }
   }
 }

@@ -3,8 +3,14 @@
   "env": {
     "node": true
   },
-  "plugins": ["@typescript-eslint"],
-  "extends": ["plugin:vue/essential", "@vue/prettier", "@vue/typescript"],
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "plugin:vue/essential",
+    "@vue/prettier",
+    "@vue/typescript"
+  ],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",

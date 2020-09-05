@@ -5,7 +5,12 @@
       <div class="info">作者：Curtion；博客：<span size="mini" type="text" @click="url('https://blog.3gxk.net')">https://blog.3gxk.net</span></div>
       <div class="info">
         软件由
-        <span size="mini" type="text" @click="url('http://vuejs.org')">Vue.js</span>、<span size="mini" type="text" @click="url('https://typescriptlang.org')">TypeScript</span>、<span size="mini" type="text" @click="url('https://electronjs.org')">Electron</span>、<span size="mini" type="text" @click="url('https://element.eleme.io')">ElementUI</span>驱动
+        <span size="mini" type="text" @click="url('http://vuejs.org')">Vue.js</span>、<span size="mini" type="text" @click="url('https://typescriptlang.org')">TypeScript</span>、<span
+          size="mini"
+          type="text"
+          @click="url('https://electronjs.org')"
+          >Electron</span
+        >、<span size="mini" type="text" @click="url('https://element.eleme.io')">ElementUI</span>驱动
       </div>
       <div class="info">
         本软件仅用于学习交流，请勿用于非法用途。

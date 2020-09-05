@@ -9,6 +9,7 @@ Vue.config.productionTip = false;
 Vue.use(ElementUI);
 
 Vue.prototype.$db = db;
+Vue.prototype.$auto = null;
 const vm = new Vue({
   router,
   store,
