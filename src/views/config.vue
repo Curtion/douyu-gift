@@ -5,8 +5,8 @@
         <span>
           <span>设置：</span>
           <el-checkbox v-model="run" @change="onRunChange">开机启动</el-checkbox>
-          <el-checkbox v-model="close" :disabled="!run">任务完成后自动关闭</el-checkbox>
-          <el-checkbox v-model="timing" @change="onTimingChange">定时运行</el-checkbox><span style="font-size:12px;">{{ runtime }}</span>
+          <el-checkbox v-model="close">任务完成后自动关闭</el-checkbox>
+          <el-checkbox v-model="timing" @change="onTimingChange">定时运行</el-checkbox><span style="font-size: 12px">{{ runtime }}</span>
         </span>
         <span>
           <el-button size="mini" type="text" @click="updateFans">更新数据</el-button>
@@ -23,7 +23,7 @@
                 <i class="el-icon-question" title="默认平均分配，注意比例一定要等于100%。自动赠送时数量均向下取整。"></i>
               </template>
               <template slot-scope="scope">
-                <el-input @change="onChange" v-model="scope.row.send" size="mini" placeholder="赠送比例" style="width:60%;"></el-input>
+                <el-input @change="onChange" v-model="scope.row.send" size="mini" placeholder="赠送比例" style="width: 60%"></el-input>
               </template>
             </el-table-column>
           </el-table>
@@ -53,8 +53,8 @@ import login from '../components/nologin.vue';
 const CronJob = require('cron').CronJob;
 @Component({
   components: {
-    login
-  }
+    login,
+  },
 })
 export default class home extends Vue {
   run: boolean = false;
@@ -71,9 +71,6 @@ export default class home extends Vue {
   }
   onRunChange(val: boolean) {
     // 自动启动按钮
-    if (val === false) {
-      this.close = false;
-    }
     const status = ipcRenderer.sendSync('AutoLaunch', Number(val));
     if (status !== true) {
       this.$message(status);
@@ -98,7 +95,7 @@ export default class home extends Vue {
         this.$store.dispatch('saveNumberConfig', this.fans).then(() => {
           this.$message({
             type: 'success',
-            message: '配置成功'
+            message: '配置成功',
           });
         });
       }
@@ -122,7 +119,7 @@ export default class home extends Vue {
     if (this.timingValue === null) {
       this.$message({
         type: 'error',
-        message: '请选择时间'
+        message: '请选择时间',
       });
       return;
     }
