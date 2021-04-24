@@ -26,22 +26,22 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component } from 'vue-property-decorator'
 @Component({})
 export default class App extends Vue {
   get Active() {
-    return this.$route.name;
+    return this.$route.name
   }
   get loading() {
-    return this.$store.state.loading;
+    return this.$store.state.loading
   }
   push(name: string) {
     if (this.$route.path !== '/' + name) {
-      this.$router.push(`/${name}`);
+      this.$router.push(`/${name}`)
     }
   }
   created() {
-    this.$store.dispatch('checkLogin');
+    this.$store.dispatch('checkLogin')
   }
 }
 </script>

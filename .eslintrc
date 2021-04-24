@@ -7,7 +7,7 @@
     "@typescript-eslint"
   ],
   "extends": [
-    "plugin:vue/essential",
+    "plugin:vue/recommended",
     "@vue/prettier",
     "@vue/typescript"
   ],
@@ -20,6 +20,11 @@
     "parser": "@typescript-eslint/parser"
   },
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "prettier/prettier": "error",
+    "comma-dangle": [
+      "error",
+      "never"
+    ]
   }
 }

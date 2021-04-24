@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import Home from '../views/home.vue';
-Vue.use(VueRouter);
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Home from '../views/home.vue'
+Vue.use(VueRouter)
 
 const routes = [
   {
@@ -19,12 +19,12 @@ const routes = [
     name: 'about',
     component: () => import('../views/about.vue')
   }
-];
+]
 
 const router = new VueRouter({
   mode: 'hash',
   base: process.env.BASE_URL,
   routes
-});
+})
 
-export default router;
+export default router

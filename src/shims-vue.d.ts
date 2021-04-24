@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import Vue from 'vue'
 declare module 'vue/types/vue' {
   interface Vue {
-    $db: any;
-    $auto: any;
+    $db: any
+    $auto: any
   }
 }

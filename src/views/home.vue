@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="login" v-if="isLogin">
+    <div v-if="isLogin" class="login">
       <user />
     </div>
     <div v-else class="nologin">
@@ -9,9 +9,9 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-import login from '../components/nologin.vue';
-import user from '../components/user.vue';
+import { Vue, Component } from 'vue-property-decorator'
+import login from '../components/nologin.vue'
+import user from '../components/user.vue'
 @Component({
   components: {
     login,
@@ -20,7 +20,7 @@ import user from '../components/user.vue';
 })
 export default class home extends Vue {
   get isLogin() {
-    return this.$store.state.isLogin;
+    return this.$store.state.isLogin
   }
 }
 </script>

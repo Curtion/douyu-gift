@@ -1,9 +1,9 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-import axios from 'axios';
-import { Message } from 'element-ui';
-import vm from '../main';
-Vue.use(Vuex);
+import Vue from 'vue'
+import Vuex from 'vuex'
+import axios from 'axios'
+import { Message } from 'element-ui'
+import vm from '../main'
+Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
@@ -28,7 +28,7 @@ export default new Vuex.Store({
      * @param {boolean} status
      */
     login(state, status: boolean) {
-      state.isLogin = status;
+      state.isLogin = status
     },
     /**
      * 用户信息，手机号与等级
@@ -37,8 +37,8 @@ export default new Vuex.Store({
      * @param {*} { tel, level }
      */
     user(state, { tel, level }) {
-      state.user.tel = tel;
-      state.user.level = level;
+      state.user.tel = tel
+      state.user.level = level
     },
     /**
      * 查询荧光棒得数量
@@ -47,8 +47,8 @@ export default new Vuex.Store({
      * @param {*} number
      */
     gift(state, { num, gif }) {
-      state.gift.num = num;
-      state.gift.gif = gif;
+      state.gift.num = num
+      state.gift.gif = gif
     },
     /**
      * 粉丝牌数据
@@ -56,10 +56,10 @@ export default new Vuex.Store({
      * @param {*} payload
      */
     fans(state, payload) {
-      state.fans = payload;
+      state.fans = payload
     },
     isStart(state, payload: boolean) {
-      state.isStart = payload;
+      state.isStart = payload
     }
   },
   actions: {
@@ -73,21 +73,21 @@ export default new Vuex.Store({
         .get('https://www.douyu.com/member/cp/cp_rpc_ajax')
         .then(res => {
           if (typeof res.data === 'object') {
-            commit('login', true);
+            commit('login', true)
             commit('user', {
               tel: res.data.info.mobile_phone,
               level: res.data.exp_info.current.pic_url
-            });
+            })
           } else {
-            commit('login', false);
+            commit('login', false)
           }
         })
         .catch(err => {
           Message({
             type: 'error',
             message: err
-          });
-        });
+          })
+        })
     },
     /**
      * 获取荧光棒数量
@@ -95,9 +95,9 @@ export default new Vuex.Store({
      * @param {*} { commit }
      */
     getgift({ commit, dispatch }) {
-      return new Promise((resolve, reject) => {
-        let params: FormData = new FormData();
-        params.append('rid', '4120796');
+      return new Promise<void>((resolve, reject) => {
+        let params: FormData = new FormData()
+        params.append('rid', '4120796')
         axios
           .post('https://www.douyu.com/member/prop/query', params, {
             headers: {
@@ -105,39 +105,39 @@ export default new Vuex.Store({
             }
           })
           .then(res => {
-            let isOn: boolean = false;
-            let index: number = 0;
+            let isOn: boolean = false
+            let index: number = 0
             isOn = res.data.data.list.some((element: any, i: number) => {
               if (element.prop_id === 268) {
-                index = i;
-                return true;
+                index = i
+                return true
               }
-            });
+            })
             if (isOn) {
               commit('gift', {
                 num: res.data.data.list[index].count,
                 gif: res.data.data.list[index].gif
-              });
+              })
             } else {
-              commit('gift', { num: 0, git: '' });
+              commit('gift', { num: 0, git: '' })
             }
-            dispatch('getFansList', false);
-            resolve();
+            dispatch('getFansList', false)
+            resolve()
           })
           .catch(() => {
-            reject();
-          });
-      });
+            reject()
+          })
+      })
     },
     getFansList({ commit, state }, isLoad = true) {
-      return new Promise((resolve, reject) => {
-        state.loading = true;
+      return new Promise<void>((resolve, reject) => {
+        state.loading = true
         axios
           .get('https://www.douyu.com/member/cp/getFansBadgeList')
           .then(async res => {
-            let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1];
-            let list = table.match(/<tr([\s\S]*?)<\/tr>/g);
-            let arr: Array<Object> = [];
+            let table = res.data.match(/fans-badge-list">([\S\s]*?)<\/table>/)[1]
+            let list = table.match(/<tr([\s\S]*?)<\/tr>/g)
+            let arr: Array<Object> = []
             list.slice(1).forEach((element: string) => {
               let obj: Fans = {
                 name: '',
@@ -146,48 +146,48 @@ export default new Vuex.Store({
                 ranking: '',
                 send: '',
                 roomid: ''
-              };
-              (element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
-                obj.send = '';
+              }
+              ;(element.match(/<td([\s\S]*?)<\/td>/g) as Array<string>).slice(1, 5).forEach((val: string, index: number) => {
+                obj.send = ''
                 switch (index) {
                   case 0:
-                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    val.match(/href="\/([\s\S]*?)"/);
-                    obj.roomid = RegExp.$1;
-                    break;
+                    obj.name = val.replace(/<([\s\S]*?)>/g, '').trim()
+                    val.match(/href="\/([\s\S]*?)"/)
+                    obj.roomid = RegExp.$1
+                    break
                   case 1:
-                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
+                    obj.intimacy = val.replace(/<([\s\S]*?)>/g, '').trim()
+                    break
                   case 2:
-                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
+                    obj.today = val.replace(/<([\s\S]*?)>/g, '').trim()
+                    break
                   case 3:
-                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim();
-                    break;
+                    obj.ranking = val.replace(/<([\s\S]*?)>/g, '').trim()
+                    break
                   default:
-                    break;
+                    break
                 }
-              });
-              arr.push(obj);
-            });
-            state.loading = false;
-            commit('fans', arr);
+              })
+              arr.push(obj)
+            })
+            state.loading = false
+            commit('fans', arr)
             if (isLoad) {
-              vm.$db.set('fans', arr);
+              vm.$db.set('fans', arr)
             }
-            resolve();
+            resolve()
           })
           .catch(() => {
-            reject();
-          });
-      });
+            reject()
+          })
+      })
     },
     /**
      * 保存配置到文件
      */
     saveNumberConfig({ commit }, payload) {
-      commit('fans', payload);
-      vm.$db.set('fans', payload);
+      commit('fans', payload)
+      vm.$db.set('fans', payload)
     }
   }
-});
+})

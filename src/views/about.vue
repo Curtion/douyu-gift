@@ -12,9 +12,7 @@
           >Electron</span
         >、<span size="mini" type="text" @click="url('https://element.eleme.io')">ElementUI</span>驱动
       </div>
-      <div class="info">
-        本软件仅用于学习交流，请勿用于非法用途。
-      </div>
+      <div class="info">本软件仅用于学习交流，请勿用于非法用途。</div>
       <div class="info">
         <span size="mini" type="text" @click="url('https://blog.3gxk.net/about.html')">捐赠我</span>
       </div>
@@ -22,8 +20,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
-const { shell } = require('electron');
+import { Vue, Component } from 'vue-property-decorator'
+const { shell } = require('electron')
 @Component({})
 export default class about extends Vue {
   url(url: string) {
@@ -33,9 +31,9 @@ export default class about extends Vue {
       type: 'warning'
     })
       .then(() => {
-        shell.openExternal(url);
+        shell.openExternal(url)
       })
-      .catch(() => {});
+      .catch(() => {})
   }
 }
 </script>

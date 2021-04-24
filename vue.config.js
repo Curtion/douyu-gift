@@ -5,7 +5,7 @@ module.exports = {
         publish: ['github'],
         appId: 'com.3gxk.app',
         productName: '斗鱼续牌工具', //项目名
-        copyright: 'Copyright © 2014-2019', //版权信息
+        copyright: 'Copyright © 2014-2021', //版权信息
         directories: {
           output: './dist' //输出文件路径
         },

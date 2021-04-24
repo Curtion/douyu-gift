@@ -1,9 +1,9 @@
-import { ipcMain } from 'electron';
-const AutoLaunch = require('auto-launch'); // 自动启动
+import { ipcMain } from 'electron'
+const AutoLaunch = require('auto-launch') // 自动启动
 let douyuAutoLauncher = new AutoLaunch({
   name: 'douyu-git',
   path: process.execPath
-});
+})
 ipcMain.on('AutoLaunch', (event, arg) => {
   // 设置开启启动
   if (arg === 0) {
@@ -11,39 +11,39 @@ ipcMain.on('AutoLaunch', (event, arg) => {
       .isEnabled()
       .then((isEnabled: boolean) => {
         if (!isEnabled) {
-          event.returnValue = true;
-          return;
+          event.returnValue = true
+          return
         }
-        douyuAutoLauncher.disable();
-        event.returnValue = true;
+        douyuAutoLauncher.disable()
+        event.returnValue = true
       })
       .catch((err: Error) => {
-        event.returnValue = err.toString();
-      });
+        event.returnValue = err.toString()
+      })
   }
   if (arg === 1) {
     douyuAutoLauncher
       .isEnabled()
       .then((isEnabled: boolean) => {
         if (isEnabled) {
-          event.returnValue = true;
-          return;
+          event.returnValue = true
+          return
         }
-        douyuAutoLauncher.enable();
-        event.returnValue = true;
+        douyuAutoLauncher.enable()
+        event.returnValue = true
       })
       .catch((err: Error) => {
-        event.returnValue = err.toString();
-      });
+        event.returnValue = err.toString()
+      })
   }
   if (arg === 3) {
     douyuAutoLauncher
       .isEnabled()
       .then((isEnabled: boolean) => {
-        event.returnValue = isEnabled;
+        event.returnValue = isEnabled
       })
       .catch((err: Error) => {
-        event.returnValue = err.toString();
-      });
+        event.returnValue = err.toString()
+      })
   }
-});
+})

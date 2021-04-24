@@ -23,7 +23,7 @@
                 <i class="el-icon-question" title="默认平均分配，注意比例一定要等于100%。自动赠送时数量均向下取整。"></i>
               </template>
               <template slot-scope="scope">
-                <el-input @change="onChange" v-model="scope.row.send" size="mini" placeholder="赠送比例" style="width: 60%"></el-input>
+                <el-input v-model="scope.row.send" size="mini" placeholder="赠送比例" style="width: 60%" @change="onChange"></el-input>
               </template>
             </el-table-column>
           </el-table>
@@ -45,132 +45,132 @@
   </div>
 </template>
 <script lang="ts">
-const { BrowserWindow } = require('electron').remote;
-const { ipcRenderer } = require('electron');
-import { Vue, Component, Watch } from 'vue-property-decorator';
-const math = require('mathjs');
-import login from '../components/nologin.vue';
-const CronJob = require('cron').CronJob;
+const { BrowserWindow } = require('electron').remote
+const { ipcRenderer } = require('electron')
+import { Vue, Component, Watch } from 'vue-property-decorator'
+const math = require('mathjs')
+import login from '../components/nologin.vue'
+const CronJob = require('cron').CronJob
 @Component({
   components: {
-    login,
-  },
+    login
+  }
 })
 export default class home extends Vue {
-  run: boolean = false;
-  close: boolean = false;
-  timing: boolean = false;
-  timingValue: any = null;
-  timingValueShow: boolean = false;
-  runtime: string = '';
+  run: boolean = false
+  close: boolean = false
+  timing: boolean = false
+  timingValue: any = null
+  timingValueShow: boolean = false
+  runtime: string = ''
   get isLogin() {
-    return this.$store.state.isLogin;
+    return this.$store.state.isLogin
   }
   get fans() {
-    return this.$store.state.fans;
+    return this.$store.state.fans
   }
   onRunChange(val: boolean) {
     // 自动启动按钮
-    const status = ipcRenderer.sendSync('AutoLaunch', Number(val));
+    const status = ipcRenderer.sendSync('AutoLaunch', Number(val))
     if (status !== true) {
-      this.$message(status);
+      this.$message(status)
     }
   }
   onChange(val: string) {
     // 配置赠送比列
     let strip = (num: number, precision = 12) => {
-      return +parseFloat(num.toPrecision(precision));
-    };
+      return +parseFloat(num.toPrecision(precision))
+    }
     if (!/(.*)%/.test(val)) {
-      this.$message('格式不正确');
+      this.$message('格式不正确')
     } else {
-      let count = 0;
+      let count = 0
       this.fans.forEach((element: any) => {
-        count = math.add(math.multiply(Number(element.send.split('%')[0]), 0.01), count);
-      });
-      count = strip(count);
+        count = math.add(math.multiply(Number(element.send.split('%')[0]), 0.01), count)
+      })
+      count = strip(count)
       if (count !== 1) {
-        this.$message('百分比合计不为100%');
+        this.$message('百分比合计不为100%')
       } else {
         this.$store.dispatch('saveNumberConfig', this.fans).then(() => {
           this.$message({
             type: 'success',
-            message: '配置成功',
-          });
-        });
+            message: '配置成功'
+          })
+        })
       }
     }
   }
   updateFans() {
     // 更新粉丝牌数据
-    this.$store.dispatch('getFansList');
+    this.$store.dispatch('getFansList')
   }
   timingClose() {
-    this.timingValueShow = false;
-    this.timing = false;
-    this.timingValue = null;
-    this.runtime = '';
-    this.$db.set('runtime', null);
+    this.timingValueShow = false
+    this.timing = false
+    this.timingValue = null
+    this.runtime = ''
+    this.$db.set('runtime', null)
     if (this.$auto !== null) {
-      this.$auto.stop();
+      this.$auto.stop()
     }
   }
   timingOk() {
     if (this.timingValue === null) {
       this.$message({
         type: 'error',
-        message: '请选择时间',
-      });
-      return;
+        message: '请选择时间'
+      })
+      return
     }
-    let h = this.timingValue.getHours();
-    let m = this.timingValue.getMinutes();
-    let s = this.timingValue.getSeconds();
-    this.$db.set('runtime', h + ':' + m + ':' + s);
-    this.runtime = h + ':' + m + ':' + s;
-    this.timingValueShow = false;
+    let h = this.timingValue.getHours()
+    let m = this.timingValue.getMinutes()
+    let s = this.timingValue.getSeconds()
+    this.$db.set('runtime', h + ':' + m + ':' + s)
+    this.runtime = h + ':' + m + ':' + s
+    this.timingValueShow = false
     setTimeout(() => {
-      this.$router.push('/');
-    });
+      this.$router.push('/')
+    })
   }
   onTimingChange(val: boolean) {
     if (val === true) {
-      this.timingValueShow = true;
+      this.timingValueShow = true
     }
   }
   @Watch('timing')
   onTimingChangeWatch(newval: boolean) {
     // 监听定时设置按钮
-    this.$db.set('timing', newval);
+    this.$db.set('timing', newval)
     if (newval === true) {
-      this.close = false;
+      this.close = false
     } else {
-      this.timingClose();
+      this.timingClose()
     }
   }
   @Watch('close')
   onCloseChangeWatch(newval: boolean) {
     // 监听自动关闭按钮
-    this.$db.set('close', newval);
+    this.$db.set('close', newval)
     if (newval === true) {
-      this.timing = false;
+      this.timing = false
     }
   }
   created() {
-    let status = ipcRenderer.sendSync('AutoLaunch', 3);
+    let status = ipcRenderer.sendSync('AutoLaunch', 3)
     if (typeof status === 'boolean') {
-      this.run = status;
+      this.run = status
     } else {
-      this.$message(status);
+      this.$message(status)
     }
-    this.close = this.$db.get('close');
-    this.timing = this.$db.get('timing');
-    this.runtime = this.$db.get('runtime');
-    let fans = this.$db.get('fans');
+    this.close = this.$db.get('close')
+    this.timing = this.$db.get('timing')
+    this.runtime = this.$db.get('runtime')
+    let fans = this.$db.get('fans')
     if (!fans) {
-      this.updateFans();
+      this.updateFans()
     } else {
-      this.$store.commit('fans', JSON.parse(JSON.stringify(fans)));
+      this.$store.commit('fans', JSON.parse(JSON.stringify(fans)))
     }
   }
 }

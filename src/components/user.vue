@@ -7,7 +7,7 @@
       </div>
       <div>
         <span v-if="gift.num !== 0" class="gift">
-          <img :src="gift.gif" alt="荧光棒" height="16" style="margin-right:5px;" />
+          <img :src="gift.gif" alt="荧光棒" height="16" style="margin-right: 5px" />
           剩余：{{ gift.num }}
         </span>
         <span v-else>
@@ -18,7 +18,7 @@
         <el-button type="info" size="mini">切换账号</el-button>
       </div>
     </header>
-    <el-alert :title="info.title" :type="info.type" v-if="info.show" :closable="false" center show-icon></el-alert>
+    <el-alert v-if="info.show" :title="info.title" :type="info.type" :closable="false" center show-icon></el-alert>
     <main class="main">
       <el-scrollbar class="scrollbar">
         <el-table :data="fans" style="width: 100%">
@@ -32,83 +32,83 @@
   </div>
 </template>
 <script lang="ts">
-const { app } = require('electron').remote;
-import { Vue, Component, Watch } from 'vue-property-decorator';
-const { BrowserWindow } = require('electron').remote;
-import init from '../function/send';
-const CronJob = require('cron').CronJob;
+const { app } = require('electron').remote
+import { Vue, Component, Watch } from 'vue-property-decorator'
+const { BrowserWindow } = require('electron').remote
+import init from '../function/send'
+const CronJob = require('cron').CronJob
 interface windows {
-  [propName: string]: any;
+  [propName: string]: any
 }
 interface alertInfo {
-  title: string;
-  type: string;
-  show: boolean;
+  title: string
+  type: string
+  show: boolean
 }
 @Component({})
 export default class user extends Vue {
-  win: windows = {};
+  win: windows = {}
   info: alertInfo = {
     title: '',
     type: 'info',
     show: false
-  };
+  }
   get user() {
-    return this.$store.state.user;
+    return this.$store.state.user
   }
   get gift() {
-    return this.$store.state.gift;
+    return this.$store.state.gift
   }
   get fans() {
-    return this.$store.state.fans;
+    return this.$store.state.fans
   }
   upData() {
-    let fans = this.$db.get('fans');
+    let fans = this.$db.get('fans')
     if (!fans) {
       this.$message({
         type: 'error',
         message: '请在“任务配置”选项卡中先配置任务'
-      });
-      return;
+      })
+      return
     }
     this.$store
       .dispatch('getgift')
       .then(() => {
         if (this.gift.num > 0) {
-          let i = 4;
+          let i = 4
           let timer = setInterval(() => {
-            i--;
-            this.info.title = `${i}秒后开始赠送...`;
-            this.info.show = true;
+            i--
+            this.info.title = `${i}秒后开始赠送...`
+            this.info.show = true
             if (i === 1) {
-              this.info.show = false;
-              clearInterval(timer);
+              this.info.show = false
+              clearInterval(timer)
               init(fans).then(res => {
                 if (res) {
                   setTimeout(() => {
-                    this.upData();
-                    this.$store.commit('isStart', false);
-                    let close = this.$db.get('close');
+                    this.upData()
+                    this.$store.commit('isStart', false)
+                    let close = this.$db.get('close')
                     if (close) {
-                      app.quit();
+                      app.quit()
                     }
-                  }, 5000);
+                  }, 5000)
                 }
-              });
+              })
             }
-          }, 1000);
+          }, 1000)
         } else {
-          this.$store.commit('isStart', false);
+          this.$store.commit('isStart', false)
         }
       })
-      .catch(() => {});
+      .catch(() => {})
   }
   start() {
-    this.$store.commit('fans', []);
+    this.$store.commit('fans', [])
     if (!this.$store.state.isStart) {
-      this.info.title = '正在检测并领取荧光棒...';
-      this.info.show = true;
-      this.$store.commit('isStart', true);
+      this.info.title = '正在检测并领取荧光棒...'
+      this.info.show = true
+      this.$store.commit('isStart', true)
       this.win = new BrowserWindow({
         width: 1200,
         height: 800,
@@ -118,27 +118,27 @@ export default class user extends Vue {
         },
         resizable: false,
         show: false
-      });
-      this.win.loadURL('https://www.douyu.com/4120796');
+      })
+      this.win.loadURL('https://www.douyu.com/4120796')
       this.win.on('closed', () => {
-        this.upData();
-      });
+        this.upData()
+      })
       setTimeout(() => {
-        this.win.close();
-        this.info.show = false;
-      }, 10000);
+        this.win.close()
+        this.info.show = false
+      }, 10000)
     }
   }
   created() {
-    this.start();
+    this.start()
     if (this.$db.get('timing') === true && this.$auto === null) {
-      const time = this.$db.get('runtime').split(':');
-      this.$auto = new CronJob(`${time[2]} ${time[1]} ${time[0]} * * *`, this.start.bind(this));
-      this.$auto.start();
+      const time = this.$db.get('runtime').split(':')
+      this.$auto = new CronJob(`${time[2]} ${time[1]} ${time[0]} * * *`, this.start.bind(this))
+      this.$auto.start()
       this.$message({
         type: 'success',
         message: '已开启自动运行'
-      });
+      })
     }
   }
 }
