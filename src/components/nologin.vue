@@ -9,6 +9,7 @@ interface windows {
 }
 @Component({})
 export default class home extends Vue {
+  [x: string]: any
   win: windows = {}
   get isLogin() {
     return this.$store.state.isLogin

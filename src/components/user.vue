@@ -47,6 +47,7 @@ interface alertInfo {
 }
 @Component({})
 export default class user extends Vue {
+  [x: string]: any
   win: windows = {}
   info: alertInfo = {
     title: '',
