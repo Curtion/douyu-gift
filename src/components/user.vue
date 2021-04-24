@@ -33,7 +33,7 @@
 </template>
 <script lang="ts">
 const { app } = require('electron').remote
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 const { BrowserWindow } = require('electron').remote
 import init from '../function/send'
 const CronJob = require('cron').CronJob
@@ -65,6 +65,7 @@ export default class user extends Vue {
   }
   upData() {
     let fans = this.$db.get('fans')
+    init(fans)
     if (!fans) {
       this.$message({
         type: 'error',

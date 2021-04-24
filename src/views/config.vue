@@ -45,12 +45,10 @@
   </div>
 </template>
 <script lang="ts">
-const { BrowserWindow } = require('electron').remote
 const { ipcRenderer } = require('electron')
 import { Vue, Component, Watch } from 'vue-property-decorator'
 const math = require('mathjs')
 import login from '../components/nologin.vue'
-const CronJob = require('cron').CronJob
 @Component({
   components: {
     login

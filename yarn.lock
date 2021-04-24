@@ -3612,6 +3612,11 @@ electron-download@^4.1.1:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
+electron-log@^4.3.4:
+  version "4.3.4"
+  resolved "https://registry.npm.taobao.org/electron-log/download/electron-log-4.3.4.tgz#97e991dcd653e759e14eb2ae5d6ba4440f50afd8"
+  integrity sha1-l+mR3NZT51nhTrKuXWukRA9Qr9g=
+
 electron-publish@21.2.0:
   version "21.2.0"
   resolved "https://registry.npm.taobao.org/electron-publish/download/electron-publish-21.2.0.tgz#cc225cb46aa62e74b899f2f7299b396c9802387d"
