@@ -27,7 +27,7 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {boolean} status
      */
-    login(state, status: boolean) {
+    login(state: any, status: boolean) {
       state.isLogin = status
     },
     /**
@@ -36,7 +36,7 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {*} { tel, level }
      */
-    user(state, { tel, level }) {
+    user(state: any, { tel, level }: any) {
       state.user.tel = tel
       state.user.level = level
     },
@@ -46,7 +46,7 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {*} number
      */
-    gift(state, { num, gif }) {
+    gift(state: any, { num, gif }: any) {
       state.gift.num = num
       state.gift.gif = gif
     },
@@ -55,7 +55,7 @@ export default new Vuex.Store({
      * @param {*} state
      * @param {*} payload
      */
-    fans(state, payload) {
+    fans(state: any, payload: any) {
       state.fans = payload
     },
     isStart(state, payload: boolean) {
@@ -68,7 +68,7 @@ export default new Vuex.Store({
      *
      * @param {*} { commit }
      */
-    checkLogin({ commit }) {
+    checkLogin({ commit }: any) {
       axios
         .get('https://www.douyu.com/member/cp/cp_rpc_ajax')
         .then(res => {
@@ -94,7 +94,7 @@ export default new Vuex.Store({
      *
      * @param {*} { commit }
      */
-    getgift({ commit, dispatch }) {
+    getgift({ commit, dispatch }: any) {
       return new Promise<void>((resolve, reject) => {
         let params: FormData = new FormData()
         params.append('rid', '4120796')
