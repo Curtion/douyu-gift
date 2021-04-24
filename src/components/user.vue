@@ -65,7 +65,6 @@ export default class user extends Vue {
   }
   upData() {
     let fans = this.$db.get('fans')
-    init(fans)
     if (!fans) {
       this.$message({
         type: 'error',
