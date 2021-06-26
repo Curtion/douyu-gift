@@ -37,6 +37,7 @@ import { Vue, Component } from 'vue-property-decorator'
 const { BrowserWindow } = require('electron').remote
 import init from '../function/send'
 const CronJob = require('cron').CronJob
+const log = require('electron-log')
 interface windows {
   [propName: string]: any
 }
@@ -104,7 +105,10 @@ export default class user extends Vue {
       })
       .catch(() => {})
   }
-  start() {
+  start(type?: string) {
+    if (type === 'auto') {
+      log.info('自动运行触发')
+    }
     this.$store.commit('fans', [])
     if (!this.$store.state.isStart) {
       this.info.title = '正在检测并领取荧光棒...'
@@ -134,8 +138,9 @@ export default class user extends Vue {
     this.start()
     if (this.$db.get('timing') === true && this.$auto === null) {
       const time = this.$db.get('runtime').split(':')
-      this.$auto = new CronJob(`${time[2]} ${time[1]} ${time[0]} * * *`, this.start.bind(this))
+      this.$auto = new CronJob(`${time[2]} ${time[1]} ${time[0]} * * *`, this.start.bind(this, 'auto'))
       this.$auto.start()
+      log.info('开启自动运行任务')
       this.$message({
         type: 'success',
         message: '已开启自动运行'
