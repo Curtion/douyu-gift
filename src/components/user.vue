@@ -119,7 +119,8 @@ export default class user extends Vue {
         height: 800,
         webPreferences: {
           nodeIntegration: true,
-          webSecurity: false
+          webSecurity: false,
+          enableRemoteModule: true
         },
         resizable: false,
         show: false
