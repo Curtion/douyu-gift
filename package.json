@@ -23,7 +23,7 @@
     "electron-store": "^5.2.0",
     "element-ui": "^2.12.0",
     "mathjs": "^7.5.1",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "sass-loader": "^8.0.0",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
